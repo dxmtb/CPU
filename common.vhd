@@ -6,6 +6,9 @@ package common is
 -- constants
     constant ZERO : std_logic_vector(15 downto 0) := "0000000000000000";
     constant HIGH_RESIST : std_logic_vector(15 downto 0) := "ZZZZZZZZZZZZZZZZ";
+    constant T_index : std_logic_vector(2 downto 0) := "100";
+    constant IH_index : std_logic_vector(2 downto 0) := "101";
+    constant SP_index : std_logic_vector(2 downto 0) := "110";
 -- MUX control signals    
     type WBSrcType is (WBSRrc_ALURes, WBSrc_Mem);
     type MemDataType is (MemData_Rx, MemData_Ry);
@@ -14,4 +17,5 @@ package common is
     type Op2SrcType is (Op2Src_Imm, Op2Src_Ry, Op2Src_0);
     type ForwardBType is (ForwardB_Un, ForwardB_WriteData, ForwardB_ALUout);
     type ForwardAType is (ForwardA_Un, ForwardA_WriteData, ForwardA_ALUout);
+    type WBDstType is (WBDst_Rx, WBDst_Ry, WBDst_Rz, WBDst_SP, WBDst_IH, WBDst_T);
 end common;
