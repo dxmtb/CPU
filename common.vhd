@@ -9,4 +9,5 @@ package common is
 -- Mux control signals    
     type WBSrcType is (WBSRrc_ALURes, WBSrc_Mem);
     type MemDataType is (MemData_Rx, MemData_Ry);
+    type PCSrcType is (PCSrc_PC1, PCSrc_B, PCSrc_Rx_0, PCSrc_Rx_1, PCSrc_T_0, PCSrc_Rx, PCSrc_RA);
 end common;
