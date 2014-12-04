@@ -4,18 +4,18 @@ library work;
 use work.common.all;
 
 entity MUX_A is
-    port (Rx         : in  std_logic_vector (15 downto 0);
-           Ry        : in  std_logic_vector (15 downto 0);
-           SP        : in  std_logic_vector (15 downto 0);
-           Imm       : in  std_logic_vector (15 downto 0);
-           IH        : in  std_logic_vector (15 downto 0);
-           PC1       : in  std_logic_vector (15 downto 0);
-           WriteData : in  std_logic_vector (15 downto 0);
-           ALUout    : in  std_logic_vector (15 downto 0);
-           Op1Src    : in  Op1SrcType;
-           ForwardA  : in  ForwardAType;
-           Ret       : out std_logic_vector (15 downto 0)
-           );
+    port (Rx        : in  std_logic_vector (15 downto 0);
+          Ry        : in  std_logic_vector (15 downto 0);
+          SP        : in  std_logic_vector (15 downto 0);
+          Imm       : in  std_logic_vector (15 downto 0);
+          IH        : in  std_logic_vector (15 downto 0);
+          PC1       : in  std_logic_vector (15 downto 0);
+          WriteData : in  std_logic_vector (15 downto 0);
+          ALUout    : in  std_logic_vector (15 downto 0);
+          Op1Src    : in  Op1SrcType;
+          ForwardA  : in  ForwardAType;
+          Ret       : out std_logic_vector (15 downto 0)
+          );
 end MUX_A;
 
 architecture Behaviour of MUX_A is

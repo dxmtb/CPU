@@ -5,10 +5,10 @@ use work.common.all;
 
 entity MUX_D is
     port (ALURes : in  std_logic_vector (15 downto 0);
-           Mem   : in  std_logic_vector (15 downto 0);
-           WBSrc : in  WBSrcType;
-           Ret   : out std_logic_vector (15 downto 0)
-           );
+          Mem    : in  std_logic_vector (15 downto 0);
+          WBSrc  : in  WBSrcType;
+          Ret    : out std_logic_vector (15 downto 0)
+          );
 end MUX_D;
 
 architecture Behaviour of MUX_D is

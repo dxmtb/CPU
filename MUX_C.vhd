@@ -4,12 +4,12 @@ library work;
 use work.common.all;
 
 entity MUX_C is
-    port (Rx     : in  std_logic_vector (2 downto 0);
-           Ry    : in  std_logic_vector (2 downto 0);
-           Rz    : in  std_logic_vector (2 downto 0);
-           WBDst : in  WBDstType;
-           Ret   : out std_logic_vector (15 downto 0)
-           );
+    port (Rx    : in  std_logic_vector (2 downto 0);
+          Ry    : in  std_logic_vector (2 downto 0);
+          Rz    : in  std_logic_vector (2 downto 0);
+          WBDst : in  WBDstType;
+          Ret   : out std_logic_vector (15 downto 0)
+          );
 end MUX_C;
 
 architecture Behaviour of MUX_C is

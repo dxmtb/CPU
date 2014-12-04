@@ -27,13 +27,13 @@ begin
         variable RetMRegs  : MRegsType;
         variable RetWBRegs : WBRegsType;
     begin
-		-- NOP by default
-        RetIFRegs.PCSrc := PCSrc_PC1;
-		RetIDRegs.RAWrite := RAWrite_No;
-		RetMRegs.MemOp := MemOp_Read;
+        -- NOP by default
+        RetIFRegs.PCSrc    := PCSrc_PC1;
+        RetIDRegs.RAWrite  := RAWrite_No;
+        RetMRegs.MemOp     := MemOp_Read;
         RetWBRegs.WBEnable := WBEnable_No;
-		
-		
+        
+        
     end process;
 
 end architecture;  -- arch

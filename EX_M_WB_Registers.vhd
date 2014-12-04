@@ -14,7 +14,7 @@ entity EX_M_WB_Registers is
         out_EXRegs : out EXRegsType;
         out_MRegs  : out MRegsType;
         out_WBRegs : out WBRegsType;
-        out_data   : out  EX_M_WB_Data
+        out_data   : out EX_M_WB_Data
         ) ;
 end entity;  -- EX_WB_M_Registers
 
@@ -25,8 +25,8 @@ begin
     begin
         if(rising_edge(clk)) then
             if (force_nop = '1') then
-				out_MRegs.MemOp <= MemOp_Read;
-		        out_WBRegs.WBEnable <= WBEnable_No;
+                out_MRegs.MemOp     <= MemOp_Read;
+                out_WBRegs.WBEnable <= WBEnable_No;
             else
                 out_EXRegs <= in_EXRegs;
                 out_MRegs  <= in_MRegs;
