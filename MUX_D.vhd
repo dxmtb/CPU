@@ -16,7 +16,7 @@ begin
     process(ALURes, Mem, WBSrc)
     begin
         case WBSrc is
-            when WBSRrc_ALURes =>
+            when WBSrc_ALURes =>
                 Ret <= ALURes;
             when WBSrc_Mem =>
                 Ret <= Mem;

@@ -11,7 +11,7 @@ package common is
 
     -- MUX control signals
     type PCSrcType is (PCSrc_PC1, PCSrc_B, PCSrc_Rx_0, PCSrc_Rx_1, PCSrc_T_0, PCSrc_Rx, PCSrc_RA);
-    type ImmExtType is (ImmExt_Sign_7, ImmExt_Sign_3, ImmExt_Sign_10, ImmExt_Sign4, ImmExt_Shift_4_2,
+    type ImmExtType is (ImmExt_Sign_7, ImmExt_Sign_3, ImmExt_Sign_10, ImmExt_Sign_4, ImmExt_Shift_4_2,
                         ImmExt_Zero_7);
     type RAWriteType is (RAWrite_Yes, RAWrite_No);
     type Op1SrcType is (Op1Src_Rx, Op1Src_Ry, Op1Src_SP, Op1Src_Imm, Op1Src_IH, Op1Src_PC1);
@@ -20,7 +20,7 @@ package common is
     type ALUOpType is (ALUOp_Plus, ALUOp_And, ALUOp_Sub, ALUOp_Or, ALUOp_SLL, ALUOp_SRA, ALUOp_If_Less);
     type MemDataType is (MemData_Rx, MemData_Ry);
     type MemOpType is (MemOp_Read, MemOp_Write);
-    type WBSrcType is (WBSRrc_ALURes, WBSrc_Mem);
+    type WBSrcType is (WBSrc_ALURes, WBSrc_Mem);
     type WBEnableType is (WBEnable_Yes, WBEnable_No);
 
     type ForwardBType is (ForwardB_None, ForwardB_WriteData, ForwardB_ALUout);
@@ -110,19 +110,21 @@ package common is
     constant INST_FUNC_ADDU      : std_logic_vector(1 downto 0) := "01";
     constant INST_FUNC_SUBU      : std_logic_vector(1 downto 0) := "11";
 
-    constant INST_CODE_AND_TO_SLT      : std_logic_vector(4 downto 0) := "11101";
-    constant INST_RD_FUNC_AND          : std_logic_vector(4 downto 0) := "01100";
-    constant INST_RD_FUNC_CMP          : std_logic_vector(4 downto 0) := "01010";
-    constant INST_RD_FUNC_JALR_JR_MFPC : std_logic_vector(4 downto 0) := "00000";
-    constant INST_RT_JALR              : std_logic_vector(2 downto 0) := "110";
-    constant INST_RT_JR                : std_logic_vector(2 downto 0) := "000";
-    constant INST_RT_MFPC              : std_logic_vector(2 downto 0) := "010";
-    constant INST_RD_FUNC_NEG          : std_logic_vector(4 downto 0) := "01011";
-    constant INST_RD_FUNC_OR           : std_logic_vector(4 downto 0) := "01101";
-    constant INST_RD_FUNC_SLT          : std_logic_vector(4 downto 0) := "00010";
+    constant INST_CODE_AND_TO_SLT           : std_logic_vector(4 downto 0) := "11101";
+    constant INST_RD_FUNC_AND               : std_logic_vector(4 downto 0) := "01100";
+    constant INST_RD_FUNC_CMP               : std_logic_vector(4 downto 0) := "01010";
+    constant INST_RD_FUNC_JALR_JR_MFPC_JRRA : std_logic_vector(4 downto 0) := "00000";
+    constant INST_RT_JALR                   : std_logic_vector(2 downto 0) := "110";
+    constant INST_RT_JR                     : std_logic_vector(2 downto 0) := "000";
+    constant INST_RT_MFPC                   : std_logic_vector(2 downto 0) := "010";
+    constant INST_RT_JRRA                   : std_logic_vector(2 downto 0) := "001";
+    constant INST_RD_FUNC_NEG               : std_logic_vector(4 downto 0) := "01011";
+    constant INST_RD_FUNC_OR                : std_logic_vector(4 downto 0) := "01101";
+    constant INST_RD_FUNC_SLT               : std_logic_vector(4 downto 0) := "00010";
 
     constant INST_CODE_MFIH_MTIH : std_logic_vector(4 downto 0) := "11110";
     constant INST_FUNC_MFIH      : std_logic_vector(1 downto 0) := "00";
     constant INST_FUNC_MTIH      : std_logic_vector(1 downto 0) := "01";
 
+    constant INST_CODE_MOVE : std_logic_vector(4 downto 0) := "01111";
 end common;
