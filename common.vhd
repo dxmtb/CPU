@@ -13,4 +13,5 @@ package common is
     type Op1SrcType is (Op1Src_Rx, Op1Src_Ry, Op1Src_SP, Op1Src_Imm, Op1Src_IH, Op1Src_PC1);
     type Op2SrcType is (Op2Src_Imm, Op2Src_Ry, Op2Src_0);
     type ForwardBType is (ForwardB_Un, ForwardB_WriteData, ForwardB_ALUout);
+    type ForwardAType is (ForwardA_Un, ForwardA_WriteData, ForwardA_ALUout);
 end common;
