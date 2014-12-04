@@ -8,4 +8,5 @@ package common is
     constant HIGH_RESIST : std_logic_vector(15 downto 0) := "ZZZZZZZZZZZZZZZZ";
 -- Mux control signals    
     type WBSrcType is (WBSRrc_ALURes, WBSrc_Mem);
+    type MemDataType is (MemData_Rx, MemData_Ry);
 end common;
