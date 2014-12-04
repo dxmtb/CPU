@@ -1,18 +1,18 @@
 library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_1164.all;
 library work;
-use work.common.ALL;
+use work.common.all;
 
-entity MUX_PC is 
-    Port ( PC1   : in STD_LOGIC_VECTOR (15 downto 0);
-           RA    : in STD_LOGIC_VECTOR (15 downto 0);
-           Branch: in STD_LOGIC_VECTOR (15 downto 0);
-           Rx    : in STD_LOGIC_VECTOR (15 downto 0);
-           PCSrc : in PCSrcType;
-           Rx_0  : in STD_LOGIC;
-           T_0   : in STD_LOGIC;
-           Ret   : out STD_LOGIC_VECTOR (15 downto 0)
-    );
+entity MUX_PC is
+    port (PC1     : in  std_logic_vector (15 downto 0);
+           RA     : in  std_logic_vector (15 downto 0);
+           Branch : in  std_logic_vector (15 downto 0);
+           Rx     : in  std_logic_vector (15 downto 0);
+           PCSrc  : in  PCSrcType;
+           Rx_0   : in  std_logic;
+           T_0    : in  std_logic;
+           Ret    : out std_logic_vector (15 downto 0)
+           );
 end MUX_PC;
 
 architecture Behaviour of MUX_PC is
@@ -25,19 +25,19 @@ begin
             when PCSrc_B =>
                 Ret <= Branch;
             when PCSrc_Rx_0 =>
-                if Rx_0 = '1' then 
+                if Rx_0 = '1' then
                     Ret <= Branch;
                 else
                     Ret <= PC1;
                 end if;
             when PCSrc_Rx_1 =>
-                if Rx_0 = '0' then 
+                if Rx_0 = '0' then
                     Ret <= Branch;
                 else
                     Ret <= PC1;
                 end if;
             when PCSrc_T_0 =>
-                if T_0 = '1' then 
+                if T_0 = '1' then
                     Ret <= Branch;
                 else
                     Ret <= PC1;
@@ -50,4 +50,4 @@ begin
                 Ret <= HIGH_RESIST;
         end case;
     end process;
-end architecture ; -- Behaviour
+end architecture;  -- Behaviour

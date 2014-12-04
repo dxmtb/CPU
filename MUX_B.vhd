@@ -1,17 +1,17 @@
 library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_1164.all;
 library work;
-use work.common.ALL;
+use work.common.all;
 
-entity MUX_B is 
-    Port ( Imm : in STD_LOGIC_VECTOR (15 downto 0);
-           Ry  : in STD_LOGIC_VECTOR (15 downto 0);
-           WriteData : in STD_LOGIC_VECTOR (15 downto 0);
-           ALUout    : in STD_LOGIC_VECTOR (15 downto 0);
-           Op2Src    : in Op2SrcType;
-           ForwardB  : in ForwardBType;
-           Ret : out STD_LOGIC_VECTOR (15 downto 0)
-    );
+entity MUX_B is
+    port (Imm        : in  std_logic_vector (15 downto 0);
+           Ry        : in  std_logic_vector (15 downto 0);
+           WriteData : in  std_logic_vector (15 downto 0);
+           ALUout    : in  std_logic_vector (15 downto 0);
+           Op2Src    : in  Op2SrcType;
+           ForwardB  : in  ForwardBType;
+           Ret       : out std_logic_vector (15 downto 0)
+           );
 end MUX_B;
 
 architecture Behaviour of MUX_B is
@@ -28,7 +28,7 @@ begin
                     when Op2Src_0 =>
                         Ret <= ZERO;
                     when others =>
-                    Ret <= HIGH_RESIST;
+                        Ret <= HIGH_RESIST;
                 end case;
             when ForwardB_WriteData =>
                 Ret <= WriteData;
@@ -38,4 +38,4 @@ begin
                 Ret <= HIGH_RESIST;
         end case;
     end process;
-end architecture ; -- Behaviour
+end architecture;  -- Behaviour

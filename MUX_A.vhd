@@ -1,21 +1,21 @@
 library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_1164.all;
 library work;
-use work.common.ALL;
+use work.common.all;
 
-entity MUX_A is 
-    Port ( Rx : in STD_LOGIC_VECTOR (15 downto 0);
-           Ry : in STD_LOGIC_VECTOR (15 downto 0);
-           SP : in STD_LOGIC_VECTOR (15 downto 0);
-           Imm: in STD_LOGIC_VECTOR (15 downto 0);
-           IH : in STD_LOGIC_VECTOR (15 downto 0);
-           PC1: in STD_LOGIC_VECTOR (15 downto 0);
-           WriteData: in STD_LOGIC_VECTOR (15 downto 0);
-           ALUout   : in STD_LOGIC_VECTOR (15 downto 0);
-           Op1Src   : in Op1SrcType;
-           ForwardA : in ForwardAType;
-           Ret: out STD_LOGIC_VECTOR (15 downto 0)
-    );
+entity MUX_A is
+    port (Rx         : in  std_logic_vector (15 downto 0);
+           Ry        : in  std_logic_vector (15 downto 0);
+           SP        : in  std_logic_vector (15 downto 0);
+           Imm       : in  std_logic_vector (15 downto 0);
+           IH        : in  std_logic_vector (15 downto 0);
+           PC1       : in  std_logic_vector (15 downto 0);
+           WriteData : in  std_logic_vector (15 downto 0);
+           ALUout    : in  std_logic_vector (15 downto 0);
+           Op1Src    : in  Op1SrcType;
+           ForwardA  : in  ForwardAType;
+           Ret       : out std_logic_vector (15 downto 0)
+           );
 end MUX_A;
 
 architecture Behaviour of MUX_A is
@@ -48,4 +48,4 @@ begin
                 Ret <= HIGH_RESIST;
         end case;
     end process;
-end architecture ; -- Behaviour
+end architecture;  -- Behaviour

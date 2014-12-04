@@ -1,14 +1,14 @@
 library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_1164.all;
 library work;
-use work.common.ALL;
+use work.common.all;
 
-entity MUX_D is 
-    Port ( ALURes : in STD_LOGIC_VECTOR (15 downto 0);
-           Mem    : in STD_LOGIC_VECTOR (15 downto 0);
-           WBSrc  : in WBSrcType;
-           Ret    : out STD_LOGIC_VECTOR (15 downto 0)
-    );
+entity MUX_D is
+    port (ALURes : in  std_logic_vector (15 downto 0);
+           Mem   : in  std_logic_vector (15 downto 0);
+           WBSrc : in  WBSrcType;
+           Ret   : out std_logic_vector (15 downto 0)
+           );
 end MUX_D;
 
 architecture Behaviour of MUX_D is
@@ -24,4 +24,4 @@ begin
                 Ret <= HIGH_RESIST;
         end case;
     end process;
-end architecture ; -- Behaviour
+end architecture;  -- Behaviour
