@@ -23,7 +23,7 @@ begin
     process(Rx, Ry, SP, Imm, IH, PC1, WriteData, ALUout, Op1Src, ForwardA)
     begin
         case ForwardA is
-            when ForwardA_Un =>
+            when ForwardA_None =>
                 case Op1Src is
                     when Op1Src_Rx =>
                         Ret <= Rx;

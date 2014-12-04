@@ -19,7 +19,7 @@ begin
     process(Imm, Ry, WriteData, ALUout, Op2Src, ForwardB)
     begin
         case ForwardB is
-            when ForwardB_Un =>
+            when ForwardB_None =>
                 case Op2Src is
                     when Op2Src_Imm =>
                         Ret <= Imm;
