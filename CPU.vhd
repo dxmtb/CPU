@@ -487,12 +487,12 @@ begin
         );
 --MUX_A.vhd
     One_MUX_A : MUX_A port map (
-        Rx        => EX_M_WB_Registers_in_data.Rx,
-        Ry        => EX_M_WB_Registers_in_data.Ry,
-        SP        => EX_M_WB_Registers_in_data.SP,
-        Imm       => EX_M_WB_Registers_in_data.Imm,
-        IH        => EX_M_WB_Registers_in_data.IH,
-        PC1       => EX_M_WB_Registers_in_data.PC1,
+        Rx        => EX_M_WB_Registers_out_data.Rx,
+        Ry        => EX_M_WB_Registers_out_data.Ry,
+        SP        => EX_M_WB_Registers_out_data.SP,
+        Imm       => EX_M_WB_Registers_out_data.Imm,
+        IH        => EX_M_WB_Registers_out_data.IH,
+        PC1       => EX_M_WB_Registers_out_data.PC1,
         WriteData => MUX_D_Ret,
         ALUout    => M_WB_Registers_out_data.ALURes,
         Op1Src    => EX_M_WB_Registers_out_EXRegs.Op1Src,
@@ -502,7 +502,7 @@ begin
 --MUX_B.vhd
     One_MUX_B : MUX_B port map (
         Imm       => EX_M_WB_Registers_out_data.Imm,
-        Ry        => EX_M_WB_Registers_in_data.Ry,
+        Ry        => EX_M_WB_Registers_out_data.Ry,
         WriteData => MUX_D_Ret,
         ALUout    => M_WB_Registers_out_data.ALURes,
         Op2Src    => EX_M_WB_Registers_out_EXRegs.Op2Src,
@@ -511,9 +511,9 @@ begin
         );
 --MUX_C.vhd
     One_MUX_C : MUX_C port map (
-        Rx    => EX_M_WB_Registers_in_data.Rx_WB,
-        Ry    => EX_M_WB_Registers_in_data.Ry_WB,
-        Rz    => EX_M_WB_Registers_in_data.Rz_WB,
+        Rx    => EX_M_WB_Registers_out_data.Rx_WB,
+        Ry    => EX_M_WB_Registers_out_data.Ry_WB,
+        Rz    => EX_M_WB_Registers_out_data.Rz_WB,
         WBDst => EX_M_WB_Registers_out_EXRegs.WBDst,
         Ret   => MUX_C_Ret
         );
@@ -526,8 +526,8 @@ begin
         );
 --MUX_E.vhd
     One_MUX_E : MUX_E port map (
-        Rx      => EX_M_WB_Registers_in_data.Rx,
-        Ry      => EX_M_WB_Registers_in_data.Ry,
+        Rx      => EX_M_WB_Registers_out_data.Rx,
+        Ry      => EX_M_WB_Registers_out_data.Ry,
         MemData => Controller_EXRegs.MemData,
         Ret     => MUX_E_Ret
         );
@@ -556,8 +556,8 @@ begin
 --M_WB_Registers.vhd
     One_M_WB_Registers : M_WB_Registers port map (
         clk        => my_clk,
-        in_MRegs   => Controller_MRegs,
-        in_WBRegs  => Controller_WBRegs,
+        in_MRegs   => EX_M_WB_Registers_out_MRegs,
+        in_WBRegs  => EX_M_WB_Registers_out_WBRegs,
         in_data    => M_WB_Registers_in_data,
         out_MRegs  => M_WB_Registers_out_MRegs,
         out_WBRegs => M_WB_Registers_out_WBRegs,
