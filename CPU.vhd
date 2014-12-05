@@ -536,11 +536,17 @@ begin
         input => RegisterGroup_reg1_data,
         ret   => Equal_Zero_ret
         );
+--adder.vhd
+    One_adder : adder port map (
+                                   pc => ID_Registers_out_PC1,
+                                   imm => SignExtend_imm_out,
+                                   res => adder_res
+                               );
 --MUX_PC.vhd
     One_MUX_PC : MUX_PC port map (
         PC1    => PC_NEW_PC_OUT,
         RA     => RA_RA,
-        Branch => SignExtend_imm_out,
+        Branch => adder_res,
         Rx     => RegisterGroup_reg1_data,
         PCSrc  => Controller_IFRegs.PCSrc,
         Rx_0   => Equal_Zero_ret,

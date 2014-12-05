@@ -13,8 +13,8 @@ entity adder is
         );
 end adder;
 
-architecture Behavioral of adder is
+architecture arch of adder is
 begin
     res <= pc + imm;
-end Behavioral;
+end arch;
 
