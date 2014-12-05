@@ -23,8 +23,7 @@ package common is
     type WBSrcType is (WBSrc_ALURes, WBSrc_Mem);
     type WBEnableType is (WBEnable_Yes, WBEnable_No);
 
-    type ForwardBType is (ForwardB_None, ForwardB_WriteData, ForwardB_ALUout);
-    type ForwardAType is (ForwardA_None, ForwardA_WriteData, ForwardA_ALUout);
+    type ForwardType is (Forward_None, Forward_Mem, Forward_ALURes);
 
     -- Registers
     type IFRegsType is record

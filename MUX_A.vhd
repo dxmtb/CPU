@@ -13,7 +13,7 @@ entity MUX_A is
           WriteData : in  std_logic_vector (15 downto 0);
           ALUout    : in  std_logic_vector (15 downto 0);
           Op1Src    : in  Op1SrcType;
-          ForwardA  : in  ForwardAType;
+          ForwardA  : in  ForwardType;
           Ret       : out std_logic_vector (15 downto 0)
           );
 end MUX_A;
@@ -23,7 +23,7 @@ begin
     process(Rx, Ry, SP, Imm, IH, PC1, WriteData, ALUout, Op1Src, ForwardA)
     begin
         case ForwardA is
-            when ForwardA_None =>
+            when Forward_None =>
                 case Op1Src is
                     when Op1Src_Rx =>
                         Ret <= Rx;
@@ -40,9 +40,9 @@ begin
                     when others =>
                         Ret <= HIGH_RESIST;
                 end case;
-            when ForwardA_WriteData =>
+            when Forward_Mem =>
                 Ret <= WriteData;
-            when ForwardA_ALUout =>
+            when Forward_ALURes =>
                 Ret <= ALUout;
             when others =>
                 Ret <= HIGH_RESIST;
