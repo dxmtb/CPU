@@ -33,7 +33,7 @@ begin
             when ALUOp_SRA =>
                 res := to_stdlogicvector(to_bitvector(Op1) sra conv_integer(Op2));
             when ALUOp_If_Less =>
-                if ieee.std_logic_unsigned."<" (Op1, Op2) then
+                if (conv_integer(Op1) < conv_integer(Op2)) then
                     res := (others => '1');
                 else
                     res := (others => '0');
