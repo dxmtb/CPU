@@ -6,20 +6,21 @@ use work.common.all;
 --use ieee.numeric.all;
 
 entity DM is
-    port (clk            : in    std_logic;
-          memop          : in    MemOpType                     := memop_none;
-          dm_addr        : in    std_logic_vector(15 downto 0) := high_resist;
-          dm_data_in     : in    std_logic_vector(15 downto 0) := high_resist;
-          dm_data_out    : inout std_logic_vector(15 downto 0) := high_resist;
-          ram1_addr      : out   std_logic_vector(17 downto 0);
-          ram1_en        : out   std_logic                     := '1';
-          ram1_we        : out   std_logic                     := '1';
-          ram1_oe        : out   std_logic                     := '1';
-          com_data_ready : in    std_logic;
-          com_rdn        : out   std_logic                     := '1';
-          com_wrn        : out   std_logic                     := '1';
-          com_tbre       : in    std_logic;
-          com_tsre       : in    std_logic);
+    port (
+        clk            : in    std_logic;
+        memop          : in    MemOpType;
+        dm_addr        : in    std_logic_vector(15 downto 0);
+        dm_data_in     : in    std_logic_vector(15 downto 0);
+        dm_data_out    : inout std_logic_vector(15 downto 0);
+        ram1_addr      : out   std_logic_vector(17 downto 0);
+        ram1_en        : out   std_logic := '1';
+        ram1_we        : out   std_logic := '1';
+        ram1_oe        : out   std_logic := '1';
+        com_data_ready : in    std_logic;
+        com_rdn        : out   std_logic := '1';
+        com_wrn        : out   std_logic := '1';
+        com_tbre       : in    std_logic;
+        com_tsre       : in    std_logic);
 end DM;
 
 architecture behavioral of DM is

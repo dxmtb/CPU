@@ -8,7 +8,7 @@ use IEEE.STD_LOGIC_ARITH.all;
 
 entity IM is
     port (clk         : in    std_logic;
-          im_addr     : in    std_logic_vector(15 downto 0) := high_resist;
+          im_addr     : in    std_logic_vector(15 downto 0);
           im_data_out : inout std_logic_vector(15 downto 0) := high_resist;
           ram2_addr   : out   std_logic_vector(17 downto 0);
           ram2_en     : out   std_logic                     := '1';

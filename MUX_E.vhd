@@ -4,11 +4,12 @@ library work;
 use work.common.all;
 
 entity MUX_E is
-    port (Rx      : in  std_logic_vector (15 downto 0);
-          Ry      : in  std_logic_vector (15 downto 0);
-          MemData : in  MemDataType;
-          Ret     : out std_logic_vector (15 downto 0)
-          );
+    port (
+        Rx      : in  std_logic_vector (15 downto 0);
+        Ry      : in  std_logic_vector (15 downto 0);
+        MemData : in  MemDataType;
+        Ret     : out std_logic_vector (15 downto 0)
+        );
 end MUX_E;
 
 architecture Behaviour of MUX_E is
@@ -21,7 +22,7 @@ begin
             when MemData_Ry =>
                 Ret <= Ry;
             when others =>
-                Ret <= HIGH_RESIST;
+                null;
         end case;
     end process;
 end architecture;  -- Behaviour

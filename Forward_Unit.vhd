@@ -5,19 +5,19 @@ use work.common.all;
 
 entity Forward_Unit is
     port (
-        op1src : in Op1SrcType;
-        op2src : in Op2SrcType;
-        rx : in std_logic_vector(2 downto 0);
-        ry : in std_logic_vector(2 downto 0);
-        wbregister1 : in std_logic_vector(2 downto 0);
-        wbsrc1 : in WBSrcType;
-        wbenable1: in WBEnableType;
-        wbregister2 : in std_logic_vector(2 downto 0);
-        wbsrc2 : in WBSrcType;
-        wbenable2 : in WBEnableType; 
-        forwarda : out ForwardType := Forward_None;
-        forwardb : out ForwardType := Forward_None
-    );
+        op1src      : in  Op1SrcType;
+        op2src      : in  Op2SrcType;
+        rx          : in  std_logic_vector(2 downto 0);
+        ry          : in  std_logic_vector(2 downto 0);
+        wbregister1 : in  std_logic_vector(3 downto 0);
+        wbsrc1      : in  WBSrcType;
+        wbenable1   : in  WBEnableType;
+        wbregister2 : in  std_logic_vector(3 downto 0);
+        wbsrc2      : in  WBSrcType;
+        wbenable2   : in  WBEnableType;
+        forwarda    : out ForwardType := Forward_None;
+        forwardb    : out ForwardType := Forward_None
+        );
 end Forward_Unit;
 
 architecture behavioral of Forward_Unit is
@@ -44,13 +44,13 @@ begin
                     forwarda <= Forward_ALURes;
                 elsif (wbregister2 = SP_index and wbenable2 = WBEnable_Yes and wbsrc2 = WBSrc_Mem) then
                     forwarda <= Forward_Mem;
-                end if; 
+                end if;
             when Op1Src_IH =>
                 if (wbregister1 = IH_index and wbenable1 = WBEnable_Yes and wbsrc1 = WBSrc_ALURes) then
                     forwarda <= Forward_ALURes;
                 elsif (wbregister2 = IH_index and wbenable2 = WBEnable_Yes and wbsrc2 = WBSrc_Mem) then
                     forwarda <= Forward_Mem;
-                end if; 
+                end if;
             when others =>
         end case;
         -- for muxB

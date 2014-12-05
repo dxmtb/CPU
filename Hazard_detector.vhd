@@ -5,14 +5,14 @@ use work.common.all;
 
 entity Hazard_Detector is
     port (
-        wbenable   : in  WBEnableType                 := WBEnable_No;
-        memop      : in  MemOpType                    := MemOp_None;
-        idrx       : in  std_logic_vector(2 downto 0) := "000";
-        idry       : in  std_logic_vector(2 downto 0) := "000";
-        wbregister : in  std_logic_vector(3 downto 0) := "0000";
-        exmwbclear : out std_logic                    := '0';
-        idhold     : out std_logic                    := '0';
-        pchold     : out std_logic                    := '0'
+        wbenable   : in  WBEnableType;
+        memop      : in  MemOpType;
+        idrx       : in  std_logic_vector(2 downto 0);
+        idry       : in  std_logic_vector(2 downto 0);
+        wbregister : in  std_logic_vector(3 downto 0);
+        exmwbclear : out std_logic := '0';
+        idhold     : out std_logic := '0';
+        pchold     : out std_logic := '0'
         );
 end Hazard_Detector;
 

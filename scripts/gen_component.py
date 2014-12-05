@@ -9,6 +9,8 @@ for fname in sys.argv[1:]:
                     status += 1
                     line = line.replace('entity', 'component')
                     name = line.split()[1]
+                    output += line
+                    continue
                 if status == 1 and 'end' in line.lower():
                     line = line.replace(name, 'component')
                     status += 1

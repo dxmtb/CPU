@@ -62,12 +62,12 @@ package common is
     type M_WB_Data is record
         ALURes  : std_logic_vector(15 downto 0);
         MemData : std_logic_vector(15 downto 0);
-        WBDst   : std_logic_vector(2 downto 0);
+        WBDst   : std_logic_vector(3 downto 0);
     end record;
     type WB_Data is record
         MemData : std_logic_vector(15 downto 0);
         ALURes  : std_logic_vector(15 downto 0);
-        WBDst   : std_logic_vector(2 downto 0);
+        WBDst   : std_logic_vector(3 downto 0);
     end record;
 
     constant INST_CODE_ADDSP3 : std_logic_vector(4 downto 0) := "00000";
