@@ -45,7 +45,7 @@ begin
                         -- visit com data
                         ram1_en     <= '1';
                         com_rdn     <= '0';
-                        dm_data_out <= dm_data_in;
+                        dm_data_out <= high_resist;
                     else
                         -- visti ram1
                         com_rdn     <= '1';
