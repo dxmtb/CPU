@@ -8,7 +8,7 @@ entity MUX_C is
           Ry    : in  std_logic_vector (2 downto 0);
           Rz    : in  std_logic_vector (2 downto 0);
           WBDst : in  WBDstType;
-          Ret   : out std_logic_vector (15 downto 0)
+          Ret   : out std_logic_vector (3 downto 0)
           );
 end MUX_C;
 
@@ -19,30 +19,24 @@ begin
         case WBDst is
             when WBDst_Rx =>
                 -- Zero extend
-                Ret (2 downto 0)  <= Rx;
-                Ret (15 downto 3) <= "0000000000000";
+                Ret (2 downto 0)  <= '0' & Rx;
             when WBDst_Ry =>
                 -- Zero extend
-                Ret (2 downto 0)  <= Ry;
-                Ret (15 downto 3) <= "0000000000000";
+                Ret (2 downto 0)  <= '0' & Ry;
             when WBDst_Rz =>
                 -- Zero extend
                 Ret (2 downto 0)  <= Rz;
-                Ret (15 downto 3) <= "0000000000000";
             when WBDst_SP =>
                 -- Zero extend
-                Ret (2 downto 0)  <= SP_index;
-                Ret (15 downto 3) <= "0000000000000";
+                Ret (3 downto 0)  <= SP_index;
             when WBDst_T =>
                 -- Zero extend
-                Ret (2 downto 0)  <= T_index;
-                Ret (15 downto 3) <= "0000000000000";
+                Ret (3 downto 0)  <= T_index;
             when WBDst_IH =>
                 -- Zero extend
-                Ret (2 downto 0)  <= IH_index;
-                Ret (15 downto 3) <= "0000000000000";
+                Ret (3 downto 0)  <= IH_index;
             when others =>
-                Ret <= HIGH_RESIST;
+                Ret <= (others => 'Z');
         end case;
     end process;
 end architecture;  -- Behaviour
