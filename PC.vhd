@@ -1,5 +1,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
+use IEEE.numeric_std.all;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use ieee.std_logic_arith.all;
 library work;
 use work.common.all;
 
@@ -12,7 +15,7 @@ entity PC is
           );
 end PC;
 
-architecture Behavioral of PC_Register is
+architecture Behavioral of PC is
 begin
     process (CLK)
     begin
