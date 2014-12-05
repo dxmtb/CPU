@@ -19,7 +19,7 @@ package common is
     type WBDstType is (WBDst_Rx, WBDst_Ry, WBDst_Rz, WBDst_SP, WBDst_IH, WBDst_T);
     type ALUOpType is (ALUOp_Plus, ALUOp_And, ALUOp_Sub, ALUOp_Or, ALUOp_SLL, ALUOp_SRA, ALUOp_If_Less);
     type MemDataType is (MemData_Rx, MemData_Ry);
-    type MemOpType is (MemOp_Read, MemOp_Write);
+    type MemOpType is (MemOp_None, MemOp_Read, MemOp_Write);
     type WBSrcType is (WBSrc_ALURes, WBSrc_Mem);
     type WBEnableType is (WBEnable_Yes, WBEnable_No);
 
@@ -127,4 +127,8 @@ package common is
     constant INST_FUNC_MTIH      : std_logic_vector(1 downto 0) := "01";
 
     constant INST_CODE_MOVE : std_logic_vector(4 downto 0) := "01111";
+-- constant for im dm/com
+    constant IM_DM_SEPARATION : integer                       := 32768;
+    constant COM_STATUS_ADDR  : std_logic_vector(15 downto 0) := "1011111100000001";
+    constant COM_DATA_ADDR    : std_logic_vector(15 downto 0) := "1011111100000000";
 end common;
