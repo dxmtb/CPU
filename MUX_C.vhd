@@ -19,22 +19,22 @@ begin
         case WBDst is
             when WBDst_Rx =>
                 -- Zero extend
-                Ret (2 downto 0)  <= '0' & Rx;
+                Ret (2 downto 0) <= '0' & Rx;
             when WBDst_Ry =>
                 -- Zero extend
-                Ret (2 downto 0)  <= '0' & Ry;
+                Ret (2 downto 0) <= '0' & Ry;
             when WBDst_Rz =>
                 -- Zero extend
-                Ret (2 downto 0)  <= Rz;
+                Ret (2 downto 0) <= Rz;
             when WBDst_SP =>
                 -- Zero extend
-                Ret (3 downto 0)  <= SP_index;
+                Ret (3 downto 0) <= SP_index;
             when WBDst_T =>
                 -- Zero extend
-                Ret (3 downto 0)  <= T_index;
+                Ret (3 downto 0) <= T_index;
             when WBDst_IH =>
                 -- Zero extend
-                Ret (3 downto 0)  <= IH_index;
+                Ret (3 downto 0) <= IH_index;
             when others =>
                 Ret <= (others => 'Z');
         end case;

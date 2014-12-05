@@ -126,7 +126,7 @@ package common is
     constant INST_FUNC_MFIH      : std_logic_vector(1 downto 0) := "00";
     constant INST_FUNC_MTIH      : std_logic_vector(1 downto 0) := "01";
 
-    constant INST_CODE_MOVE : std_logic_vector(4 downto 0) := "01111";
+    constant INST_CODE_MOVE   : std_logic_vector(4 downto 0)  := "01111";
 -- constant for im dm/com
     constant IM_DM_SEPARATION : integer                       := 32768;
     constant COM_STATUS_ADDR  : std_logic_vector(15 downto 0) := "1011111100000001";
