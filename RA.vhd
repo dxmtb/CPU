@@ -20,7 +20,7 @@ begin
     begin
         if(rising_edge(clk)) then
             if (RAWrite = RAWrite_Yes) then
-                RA_value <= write_data;
+                RA_value <= write_data + 1;
             end if;
         end if;
     end process;
