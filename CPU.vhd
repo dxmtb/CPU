@@ -431,13 +431,13 @@ begin
     One_PC : PC port map (
         PC_IN      => MUX_PC_Ret,
         pchold     => Hazard_Detector_pchold,
-        CLK        => clk,
+        CLK        => my_clk,
         PC_OUT     => PC_PC_OUT,
         NEW_PC_OUT => PC_NEW_PC_OUT
         );
 --RA.vhd
     One_RA : RA port map (
-        clk        => clk,
+        clk        => my_clk,
         RAWrite    => Controller_IDRegs.RAWrite,
         write_data => ID_Registers_out_PC1,
         RA         => RA_RA
@@ -565,7 +565,7 @@ begin
         );
 --RegisterGroup.vhd
     One_RegisterGroup : RegisterGroup port map (
-        clk          => clk,
+        clk          => my_clk,
         read_reg1    => ID_Registers_out_Rx,
         read_reg2    => ID_Registers_out_Ry,
         write_enable => WB_Registers_out_WBRegs.WBEnable,
@@ -585,7 +585,7 @@ begin
         );
 --WB_Registers.vhd
     One_WB_Registers : WB_Registers port map (
-        clk        => clk,
+        clk        => my_clk,
         in_WBRegs  => M_WB_Registers_out_WBRegs,
         in_data    => WB_Registers_in_data,
         out_WBRegs => WB_Registers_out_WBRegs,
