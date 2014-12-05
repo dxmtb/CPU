@@ -8,7 +8,7 @@ use ieee.std_logic_arith.all;
 
 entity DM is
     port (clk : in std_logic;
-         mem_op : in std_logic_vector(1 downto 0) := mem_none;
+        memop : in MemOpType := memop_none;
         dm_addr : in std_logic_vector(15 downto 0) := high_resist;
         dm_data_in : in std_logic_vector(15 downto 0) := high_resist;
         dm_data_out : inout std_logic_vector(15 downto 0) := high_resist;
@@ -32,8 +32,8 @@ begin
     process (clk)
     begin
         if (clk'event and clk = '0') then
-            case mem_op is
-                when mem_read =>
+            case memop is
+                when memop_read =>
                     if (conv_integer(dm_addr) < im_dm_separation) then 
                         ram1_en <= '1';
                     elsif (dm_addr = com_status_addr) then
@@ -54,7 +54,7 @@ begin
                         ram1_oe <= '0';
                         dm_data_out <= dm_data_in;
                     end if;
-                when mem_write =>
+                when memop_write =>
                     if (conv_integer(dm_addr) < im_dm_separation) then
                         ram1_en <= '1';
                     elsif (dm_addr = com_status_addr) then

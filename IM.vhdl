@@ -30,7 +30,7 @@ begin
             ram2_en <= '0';
             ram2_oe <= '0';
             ram2_we <= '1';
-            im_data_out <= high_resist;
+            im_data_out <= im_data_in;
         end if;
         if (clk = '1') then
             ram2_en <= '1';
