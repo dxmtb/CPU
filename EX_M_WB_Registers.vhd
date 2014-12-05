@@ -25,7 +25,7 @@ begin
     begin
         if(rising_edge(clk)) then
             if (force_nop = '1') then
-                out_MRegs.MemOp     <= MemOp_Read;
+                out_MRegs.MemOp     <= MemOp_None;
                 out_WBRegs.WBEnable <= WBEnable_No;
             else
                 out_EXRegs <= in_EXRegs;
