@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
+use IEEE.STD_LOGIC_unsigned.all;
 library work;
 use work.common.all;
 
@@ -12,7 +13,7 @@ entity PC is
           );
 end PC;
 
-architecture Behavioral of PC_Register is
+architecture Behavioral of PC is
 begin
     process (CLK)
     begin
@@ -20,7 +21,7 @@ begin
             -- update pc value at up edge
             if (WRITE_OR_NOT = '1') then
                 PC_OUT     <= PC_IN;
-                NEW_PC_OUT <= conv_std_logic_vector(CONV_INTEGER(PC_IN) + 1, 16);
+                NEW_PC_OUT <= PC_IN + 1;
             end if;
         end if;
     end process;

@@ -9,7 +9,6 @@ use IEEE.STD_LOGIC_ARITH.all;
 entity IM is
     port (clk          : in    std_logic;
            im_addr     : in    std_logic_vector(15 downto 0) := high_resist;
-           im_data_in  : in    std_logic_vector(15 downto 0) := high_resist;
            im_data_out : inout std_logic_vector(15 downto 0) := high_resist;
            ram2_addr   : out   std_logic_vector(17 downto 0);
            ram2_en     : out   std_logic                     := '1';
@@ -30,7 +29,7 @@ begin
             ram2_en     <= '0';
             ram2_oe     <= '0';
             ram2_we     <= '1';
-            im_data_out <= im_data_in;
+            im_data_out <= high_resist;
         end if;
         if (clk = '1') then
             ram2_en <= '1';

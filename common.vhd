@@ -128,7 +128,7 @@ package common is
 
     constant INST_CODE_MOVE   : std_logic_vector(4 downto 0)  := "01111";
 -- constant for im dm/com
-    constant IM_DM_SEPARATION : integer                       := 32768;
+    constant IM_DM_SEPARATION : std_logic_vector(15 downto 0) := x"4000";
     constant COM_STATUS_ADDR  : std_logic_vector(15 downto 0) := "1011111100000001";
     constant COM_DATA_ADDR    : std_logic_vector(15 downto 0) := "1011111100000000";
 end common;
