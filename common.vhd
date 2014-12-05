@@ -5,9 +5,9 @@ package common is
     -- constants
     constant ZERO        : std_logic_vector(15 downto 0) := "0000000000000000";
     constant HIGH_RESIST : std_logic_vector(15 downto 0) := "ZZZZZZZZZZZZZZZZ";
-    constant T_index     : std_logic_vector(2 downto 0)  := "100";
-    constant IH_index    : std_logic_vector(2 downto 0)  := "101";
-    constant SP_index    : std_logic_vector(2 downto 0)  := "110";
+    constant T_index     : std_logic_vector(3 downto 0)  := "1000";
+    constant IH_index    : std_logic_vector(3 downto 0)  := "1001";
+    constant SP_index    : std_logic_vector(3 downto 0)  := "1010";
 
     -- MUX control signals
     type PCSrcType is (PCSrc_PC1, PCSrc_B, PCSrc_Rx_0, PCSrc_Rx_1, PCSrc_T_0, PCSrc_Rx, PCSrc_RA);
