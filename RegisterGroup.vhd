@@ -11,7 +11,10 @@ entity RegisterGroup is
 	write_reg : in std_logic_vector(3 downto 0);
 	write_data : in std_logic_vector(15 downto 0) ;
 	reg1_data : out  std_logic_vector(15 downto 0) ;
-	reg2_data : out std_logic_vector(15 downto 0)
+	reg2_data : out std_logic_vector(15 downto 0);
+  regIH_out : out std_logic_vector(15 downto 0);
+  regSP_out : out std_logic_vector(15 downto 0);
+  regT_out : out std_logic
   ) ;
 end entity ; -- RegisterGroup
 
@@ -22,6 +25,10 @@ architecture arch of RegisterGroup is
 	signal regIH, regSP : RegType;
   signal regT : std_logic;
 begin
+  regIH_out <= regIH;
+  regSP_out <= regSP;
+  regT_out <= regT;
+
 	process (read_reg1)
 	begin
 		case read_reg1 is
