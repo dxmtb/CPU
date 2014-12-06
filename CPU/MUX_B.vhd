@@ -29,13 +29,15 @@ begin
                     when Op2Src_0 =>
                         Ret <= ZERO;
                     when others =>
-                        null;
+                        Ret <= ZERO;
                 end case;
             when Forward_Mem =>
                 Ret <= WriteData;
             when Forward_ALURes =>
                 Ret <= ALUout;
             when others =>
+              -- To avoid latch
+                Ret <= Ry;
                 null;
         end case;
     end process;

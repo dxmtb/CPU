@@ -34,6 +34,8 @@ begin
             when WBDst_IH =>
                 Ret <= IH_index;
             when others =>
+              -- To avoid latch
+                Ret <= (others => '0');
                 null;
         end case;
     end process;

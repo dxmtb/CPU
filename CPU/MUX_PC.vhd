@@ -48,6 +48,7 @@ begin
             when PCSrc_RA =>
                 Ret <= RA;
             when others =>
+                Ret <= PC1;
                 null;
         end case;
     end process;

@@ -22,6 +22,8 @@ begin
             when WBSrc_Mem =>
                 Ret <= Mem;
             when others =>
+              -- To avoid latch
+                Ret <= ALURes;
                 null;
         end case;
     end process;

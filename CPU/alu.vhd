@@ -39,6 +39,7 @@ begin
                     res := (others => '0');
                 end if;
             when others =>
+                res := (others => '0');
                 null;
         end case;
 

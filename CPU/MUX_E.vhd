@@ -22,6 +22,7 @@ begin
             when MemData_Ry =>
                 Ret <= Ry;
             when others =>
+                Ret <= Rx;
                 null;
         end case;
     end process;

@@ -39,13 +39,15 @@ begin
                     when Op1Src_PC1 =>
                         Ret <= PC1;
                     when others =>
-                        null;
+                        Ret <= Rx;
                 end case;
             when Forward_Mem =>
                 Ret <= WriteData;
             when Forward_ALURes =>
                 Ret <= ALUout;
             when others =>
+              -- To Avoid latch
+                Ret <= Rx;
                 null;
         end case;
     end process;

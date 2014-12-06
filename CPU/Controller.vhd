@@ -27,7 +27,7 @@ begin
     ins_func_1   <= INS(1 downto 0);
     ins_func_4   <= INS(4 downto 0);
     ins_func_7_5 <= INS(7 downto 5);
-    process (INS, ins_op, ins_10_8, ins_func_1, ins_func_4, ins_func_7, ins_func_7_5)
+    process (INS, ins_op, ins_10_8, ins_func_1, ins_func_4, ins_func_7_5)
         variable RetIFRegs : IFRegsType;
         variable RetIDRegs : IDRegsType;
         variable RetEXRegs : EXRegsType;
@@ -39,6 +39,14 @@ begin
         RetIDRegs.RAWrite  := RAWrite_No;
         RetMRegs.MemOp     := MemOp_Read;
         RetWBRegs.WBEnable := WBEnable_No;
+        -- To Avoid latch
+        RetIDRegs.ImmExt  := ImmExt_Sign_3;
+        RetEXRegs.Op1Src := Op1Src_Rx;
+        RetEXRegs.Op2Src := Op2Src_0;
+        RetEXRegs.WBDst := WBDst_Rx;
+        RetEXRegs.ALUOp := ALUOp_Or;
+        RetEXRegs.MemData := MemData_Rx;
+        RetWBRegs.WBSrc := WBSrc_ALURes;
 
         case ins_op is
             when INST_CODE_ADDIU =>
