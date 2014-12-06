@@ -95,7 +95,6 @@ architecture arch of CPU is
             wbsrc1      : in  WBSrcType;
             wbenable1   : in  WBEnableType;
             wbregister2 : in  std_logic_vector(3 downto 0);
-            wbsrc2      : in  WBSrcType;
             wbenable2   : in  WBEnableType;
             forwarda    : out ForwardType := Forward_None;
             forwardb    : out ForwardType := Forward_None
@@ -617,7 +616,6 @@ begin
         wbsrc1      => M_WB_Registers_out_WBRegs.WBSrc,
         wbenable1   => M_WB_Registers_out_WBRegs.WBEnable,
         wbregister2 => WB_Registers_out_data.WBDst,
-        wbsrc2      => WB_Registers_out_WBRegs.WBSrc,
         wbenable2   => WB_Registers_out_WBRegs.WBEnable,
         forwarda    => Forward_Unit_forwarda,
         forwardb    => Forward_Unit_forwardb
