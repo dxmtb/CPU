@@ -237,5 +237,11 @@ begin
             when others =>
                 null;
         end case;
+
+        IFRegs <= RetIFRegs;
+        IDRegs <= RetIDRegs;
+        ExRegs <= RetEXRegs;
+        MRegs <= RetMRegs;
+        WBRegs <= RetWBRegs;
     end process;
 end architecture;  -- arch
