@@ -432,7 +432,7 @@ architecture arch of CPU is
 begin
      clk    <= clk_11;
      my_clk <= not click;
-     process(sw, Forward_Unit_forwarda, WB_Registers_out_WBRegs)
+     process(sw, Forward_Unit_forwarda, WB_Registers_out_WBRegs, MUX_D_Ret)
      begin
          if sw = "111" then
              if Forward_Unit_forwarda = Forward_None then
@@ -700,7 +700,7 @@ begin
          );
 --RegisterGroup.vhd
      One_RegisterGroup : RegisterGroup port map (
-         clk          => my_clk,
+         clk          => clk_50,
          read_reg1    => ID_Registers_out_Rx,
          read_reg2    => ID_Registers_out_Ry,
          write_enable => WB_Registers_out_WBRegs.WBEnable,

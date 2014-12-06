@@ -17,7 +17,7 @@ end MUX_E;
 
 architecture Behaviour of MUX_E is
 begin
-    process(Rx, Ry, Data_From_M_WB, Data_From_WB, MemData)
+    process(Rx, Ry, Data_From_M_WB, Data_From_WB, MemData, ForwardE)
     begin
         case ForwardE is
             when Forward_None =>
