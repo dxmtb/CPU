@@ -24,6 +24,10 @@ begin
             exmwbclear <= '1';
             idhold     <= '1';
             pchold     <= '1';
+        else
+            exmwbclear <= '0';
+            idhold     <= '0';
+            pchold     <= '0';
         end if;
     end process;
 end behavioral;
