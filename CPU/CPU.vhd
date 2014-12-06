@@ -336,9 +336,7 @@ architecture arch of CPU is
     signal IM_ram2_en                   : std_logic;
     signal IM_ram2_we                   : std_logic;
     signal IM_ram2_oe                   : std_logic;
-    signal MUX_A_ALUout                 : std_logic_vector (15 downto 0);
     signal MUX_A_Ret                    : std_logic_vector (15 downto 0);
-    signal MUX_B_ALUout                 : std_logic_vector (15 downto 0);
     signal MUX_B_Ret                    : std_logic_vector (15 downto 0);
     signal MUX_C_Ret                    : std_logic_vector (3 downto 0);
     signal MUX_D_Ret                    : std_logic_vector (15 downto 0);
