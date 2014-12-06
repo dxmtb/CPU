@@ -19,7 +19,6 @@ architecture arch of Controller is
     signal ins_10_8     : std_logic_vector(2 downto 0);
     signal ins_func_1   : std_logic_vector(1 downto 0);
     signal ins_func_4   : std_logic_vector(4 downto 0);
-    signal ins_func_7   : std_logic_vector(7 downto 0);
     signal ins_func_7_5 : std_logic_vector(2 downto 0);
 
 begin
@@ -27,7 +26,6 @@ begin
     ins_10_8     <= INS(10 downto 8);
     ins_func_1   <= INS(1 downto 0);
     ins_func_4   <= INS(4 downto 0);
-    ins_func_7   <= INS(7 downto 0);
     ins_func_7_5 <= INS(7 downto 5);
     process (INS, ins_op, ins_10_8, ins_func_1, ins_func_4, ins_func_7, ins_func_7_5)
         variable RetIFRegs : IFRegsType;
