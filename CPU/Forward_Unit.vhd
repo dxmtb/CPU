@@ -32,35 +32,47 @@ begin
                     forwarda <= Forward_ALURes;
                 elsif (("0" & rx) = wbregister2 and wbenable2 = WBEnable_Yes and wbsrc2 = WBSrc_Mem) then
                     forwarda <= Forward_Mem;
+                else
+                    forwarda <= Forward_None;
                 end if;
             when Op1Src_Ry =>
                 if (("0" & ry) = wbregister1 and wbenable1 = WBEnable_Yes and wbsrc1 = WBSrc_ALURes) then
                     forwarda <= Forward_ALURes;
                 elsif (("0" & ry) = wbregister2 and wbenable2 = WBEnable_Yes and wbsrc2 = WBSrc_Mem) then
                     forwarda <= Forward_Mem;
+                else
+                    forwarda <= Forward_None;
                 end if;
             when Op1Src_SP =>
                 if (wbregister1 = SP_index and wbenable1 = WBEnable_Yes and wbsrc1 = WBSrc_ALURes) then
                     forwarda <= Forward_ALURes;
                 elsif (wbregister2 = SP_index and wbenable2 = WBEnable_Yes and wbsrc2 = WBSrc_Mem) then
                     forwarda <= Forward_Mem;
+                else
+                    forwarda <= Forward_None;
                 end if;
             when Op1Src_IH =>
                 if (wbregister1 = IH_index and wbenable1 = WBEnable_Yes and wbsrc1 = WBSrc_ALURes) then
                     forwarda <= Forward_ALURes;
                 elsif (wbregister2 = IH_index and wbenable2 = WBEnable_Yes and wbsrc2 = WBSrc_Mem) then
                     forwarda <= Forward_Mem;
+                else
+                    forwarda <= Forward_None;
                 end if;
             when others =>
+                forwarda <= Forward_None;
         end case;
         -- for muxB
-        forwardb <= Forward_None;
         if (op2src = Op2Src_Ry) then
             if (("0" & ry) = wbregister1 and wbenable1 = WBEnable_Yes and wbsrc1 = WBSrc_ALURes) then
                 forwardb <= Forward_ALURes;
             elsif (("0" & ry) = wbregister2 and wbenable2 = WBEnable_Yes and wbsrc2 = WBSrc_Mem) then
                 forwardb <= Forward_Mem;
+            else
+                forwardb <= Forward_None;
             end if;
+        else
+            forwardb <= Forward_None;
         end if;
     end process;
 end behavioral;
