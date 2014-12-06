@@ -18,10 +18,10 @@ entity CPU is
         RAM2_Data      : inout std_logic_vector (15 downto 0);
         com_data_ready : in    std_logic;
         com_rdn        : out   std_logic;
-        com_tbre       : in    std_logic;
+        -- com_tbre       : in    std_logic;
         com_tsre       : in    std_logic;
         com_wrn        : out   std_logic;
-        LED            : out   std_logic_vector (15 downto 0) := "0101010101010101"
+        LED            : out   std_logic_vector (15 downto 0)
         );
 end entity;  -- CPU
 
@@ -55,7 +55,7 @@ architecture arch of CPU is
             com_data_ready : in    std_logic;
             com_rdn        : out   std_logic := '1';
             com_wrn        : out   std_logic := '1';
-            com_tbre       : in    std_logic;
+            -- com_tbre       : in    std_logic;
             com_tsre       : in    std_logic);
     end component;
 
@@ -314,7 +314,6 @@ architecture arch of CPU is
     signal Controller_EXRegs            : EXRegsType;
     signal Controller_MRegs             : MRegsType;
     signal Controller_WBRegs            : WBRegsType;
-    signal DM_dm_data_out               : std_logic_vector(15 downto 0);
     signal DM_ram1_addr                 : std_logic_vector(17 downto 0);
     signal DM_ram1_en                   : std_logic;
     signal DM_ram1_we                   : std_logic;
@@ -333,7 +332,6 @@ architecture arch of CPU is
     signal Hazard_Detector_pchold       : std_logic;
     signal ID_Registers_out_PC1         : std_logic_vector(15 downto 0);
     signal ID_Registers_out_INS         : std_logic_vector(15 downto 0);
-    signal IM_im_data_out               : std_logic_vector(15 downto 0) := high_resist;
     signal IM_ram2_addr                 : std_logic_vector(17 downto 0);
     signal IM_ram2_en                   : std_logic;
     signal IM_ram2_we                   : std_logic;
@@ -373,6 +371,8 @@ architecture arch of CPU is
     signal not_RegisterGroup_regT_out : std_logic;
 
 begin
+    LED <= "0101010101010101";
+    
     ID_Registers_out_Rx <= ID_Registers_out_INS(10 downto 8);
     ID_Registers_out_Ry <= ID_Registers_out_INS(7 downto 5);
     ID_Registers_out_Rz <= ID_Registers_out_INS(4 downto 2);
@@ -399,6 +399,17 @@ begin
     my_clk                     <= clk;
     not_RegisterGroup_regT_out <= not RegisterGroup_regT_out;
 
+    RAM1_Addr <= DM_ram1_addr;
+    RAM1_EN   <= DM_ram1_en;
+    RAM1_WE   <= DM_ram1_we;
+    RAM1_OE   <= DM_ram1_oe;
+    RAM2_Addr <= IM_ram2_addr;
+    RAM2_EN   <= IM_ram2_en;
+    RAM2_WE   <= IM_ram2_we;
+    RAM2_OE   <= IM_ram2_oe;
+    com_rdn   <= DM_com_rdn;
+    com_wrn   <= DM_com_wrn;
+
 --DM.vhd
     One_DM : DM port map (
         clk            => clk,
@@ -413,7 +424,7 @@ begin
         com_data_ready => com_data_ready,
         com_rdn        => DM_com_rdn,
         com_wrn        => DM_com_wrn,
-        com_tbre       => com_tbre,
+        -- com_tbre       => com_tbre,
         com_tsre       => com_tsre
         );
 --IM.vhd

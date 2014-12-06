@@ -29,7 +29,7 @@ begin
     regSP_out <= regSP;
     regT_out  <= regT;
 
-    process (read_reg1)
+    process (read_reg1, reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7)
     begin
         case read_reg1 is
             when "000"  => reg1_data <= reg0;
@@ -44,7 +44,7 @@ begin
         end case;
     end process;
 
-    process (read_reg2)
+    process (read_reg2, reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7)
     begin
         case read_reg2 is
             when "000"  => reg2_data <= reg0;

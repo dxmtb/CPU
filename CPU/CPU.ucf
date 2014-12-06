@@ -1,5 +1,4 @@
-
-NET "CLK" LOC = U9;
+NET "CLK" LOC = B8;
 
 NET "RAM2_Addr[17]" LOC = U15;
 NET "RAM2_Addr[16]" LOC = U16;
@@ -19,8 +18,6 @@ NET "RAM2_Addr[3]" LOC = P16;
 NET "RAM2_Addr[2]" LOC = N18;
 NET "RAM2_Addr[1]" LOC = N15;
 NET "RAM2_Addr[0]" LOC = N14;
-
-
 NET "RAM2_Data[15]" LOC = N11;
 NET "RAM2_Data[14]" LOC = N12;
 NET "RAM2_Data[13]" LOC = P10;
@@ -40,34 +37,10 @@ NET "RAM2_Data[0]" LOC = U13;
 NET "RAM2_EN" LOC = N10;
 NET "RAM2_OE" LOC = R9;
 NET "RAM2_WE" LOC = M9;
-NET "LED[15]" LOC = A14;
-NET "LED[14]" LOC = E13;
-NET "LED[13]" LOC = D13;
-NET "LED[12]" LOC = B13;
-NET "LED[11]" LOC = A13;
-NET "LED[10]" LOC = F12;
-NET "LED[9]" LOC = E12;
-NET "LED[8]" LOC = A12;
-NET "LED[7]" LOC = F11;
-NET "LED[6]" LOC = E11;
-NET "LED[5]" LOC = D11;
-NET "LED[4]" LOC = C11;
-NET "LED[3]" LOC = B11;
-NET "LED[2]" LOC = A11;
-NET "LED[1]" LOC = E10;
-NET "LED[0]" LOC = D10;
-
-#NET "DISP1[6]" LOC = F8;
-#NET "DISP1[5]" LOC = E8;
-#NET "DISP1[4]" LOC = A8;
-#NET "DISP1[3]" LOC = F7;
-#NET "DISP1[2]" LOC = E7;
-#NET "DISP1[1]" LOC = D7;
-#NET "DISP1[0]" LOC = C7;
 
 NET "com_data_ready" LOC = A16;
 NET "com_rdn" LOC = C14;
-NET "com_tbre" LOC = D14;
+#NET "com_tbre" LOC = D14;
 NET "com_tsre" LOC = N9;
 NET "com_wrn" LOC = U5;
 NET "RAM1_EN" LOC = M15;
@@ -108,3 +81,27 @@ NET "RAM1_Addr[2]" LOC = D16;
 NET "RAM1_Addr[1]" LOC = C18;
 NET "RAM1_Addr[0]" LOC = C17;
 
+NET "LED[15]" LOC = A14;
+NET "LED[14]" LOC = E13;
+NET "LED[13]" LOC = D13;
+NET "LED[12]" LOC = B13;
+NET "LED[11]" LOC = A13;
+NET "LED[10]" LOC = F12;
+NET "LED[9]" LOC = E12;
+NET "LED[8]" LOC = A12;
+NET "LED[7]" LOC = F11;
+NET "LED[6]" LOC = E11;
+NET "LED[5]" LOC = D11;
+NET "LED[4]" LOC = C11;
+NET "LED[3]" LOC = B11;
+NET "LED[2]" LOC = A11;
+NET "LED[1]" LOC = E10;
+NET "LED[0]" LOC = D10;
+
+#NET "DISP1[6]" LOC = F8;
+#NET "DISP1[5]" LOC = E8;
+#NET "DISP1[4]" LOC = A8;
+#NET "DISP1[3]" LOC = F7;
+#NET "DISP1[2]" LOC = E7;
+#NET "DISP1[1]" LOC = D7;
+#NET "DISP1[0]" LOC = C7;

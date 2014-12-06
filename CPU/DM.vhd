@@ -19,7 +19,7 @@ entity DM is
         com_data_ready : in    std_logic;
         com_rdn        : out   std_logic := '1';
         com_wrn        : out   std_logic := '1';
-        com_tbre       : in    std_logic;
+        -- com_tbre       : in    std_logic;
         com_tsre       : in    std_logic);
 end DM;
 
