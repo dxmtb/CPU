@@ -130,4 +130,9 @@ package common is
     constant IM_DM_SEPARATION : std_logic_vector(15 downto 0) := x"4000";
     constant COM_STATUS_ADDR  : std_logic_vector(15 downto 0) := "1011111100000001";
     constant COM_DATA_ADDR    : std_logic_vector(15 downto 0) := "1011111100000000";
+
+-- for Coredisplayer
+    subtype XCoordinate is integer range 0 to 800;
+    subtype YCoordinate is integer range 0 to 600;
+
 end common;

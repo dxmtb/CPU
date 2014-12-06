@@ -1,4 +1,6 @@
-NET "CLK" LOC = B8;
+NET "CLICK" LOC = U9;
+NET "CLK_50" LOC = B9;
+NET "CLK_11" LOC = B8;
 
 NET "RAM2_Addr[17]" LOC = U15;
 NET "RAM2_Addr[16]" LOC = U16;
@@ -105,3 +107,19 @@ NET "LED[0]" LOC = D10;
 #NET "DISP1[2]" LOC = E7;
 #NET "DISP1[1]" LOC = D7;
 #NET "DISP1[0]" LOC = C7;
+
+NET "VGA_B[2]" LOC = D5;
+NET "VGA_B[1]" LOC = A6;
+NET "VGA_B[0]" LOC = B6;
+NET "VGA_G[2]" LOC = B4;
+NET "VGA_G[1]" LOC = C4;
+NET "VGA_G[0]" LOC = C5;
+NET "VGA_R[2]" LOC = A7;
+NET "VGA_R[1]" LOC = C3;
+NET "VGA_R[0]" LOC = A4;
+NET "hs" LOC = D6;
+NET "vs" LOC = E6;
+
+NET "SW[2]" LOC = J6;
+NET "SW[1]" LOC = J7;
+NET "SW[0]" LOC = K2;
