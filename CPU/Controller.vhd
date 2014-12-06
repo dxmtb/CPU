@@ -29,7 +29,7 @@ begin
     ins_func_4   <= INS(4 downto 0);
     ins_func_7   <= INS(7 downto 0);
     ins_func_7_5 <= INS(7 downto 5);
-    process (INS)
+    process (INS, ins_op, ins_10_8, ins_func_1, ins_func_4, ins_func_7, ins_func_7_5)
         variable RetIFRegs : IFRegsType;
         variable RetIDRegs : IDRegsType;
         variable RetEXRegs : EXRegsType;

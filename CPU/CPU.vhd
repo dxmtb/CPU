@@ -208,7 +208,7 @@ architecture arch of CPU is
             Branch : in  std_logic_vector (15 downto 0);
             Rx     : in  std_logic_vector (15 downto 0);
             PCSrc  : in  PCSrcType;
-            Rx_0   : in  std_logic;
+            Rx_0_ren   : in  std_logic;
             T_0    : in  std_logic;
             Ret    : out std_logic_vector (15 downto 0)
             );
@@ -560,7 +560,7 @@ begin
         Branch => adder_res,
         Rx     => RegisterGroup_reg1_data,
         PCSrc  => Controller_IFRegs.PCSrc,
-        Rx_0   => Equal_Zero_ret,
+        Rx_0_ren   => Equal_Zero_ret,
         T_0    => not_RegisterGroup_regT_out,
         Ret    => MUX_PC_Ret
         );

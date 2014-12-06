@@ -10,7 +10,7 @@ entity MUX_PC is
         Branch : in  std_logic_vector (15 downto 0);
         Rx     : in  std_logic_vector (15 downto 0);
         PCSrc  : in  PCSrcType;
-        Rx_0   : in  std_logic;
+        Rx_0_ren   : in  std_logic;
         T_0    : in  std_logic;
         Ret    : out std_logic_vector (15 downto 0)
         );
@@ -18,7 +18,7 @@ end MUX_PC;
 
 architecture Behaviour of MUX_PC is
 begin
-    process(PC1, RA, Branch, Rx, PCSrc, Rx_0, T_0)
+    process(PC1, RA, Branch, Rx, PCSrc, Rx_0_ren, T_0)
     begin
         case PCSrc is
             when PCSrc_PC1 =>
@@ -26,13 +26,13 @@ begin
             when PCSrc_B =>
                 Ret <= Branch;
             when PCSrc_Rx_0 =>
-                if Rx_0 = '1' then
+                if Rx_0_ren = '1' then
                     Ret <= Branch;
                 else
                     Ret <= PC1;
                 end if;
             when PCSrc_Rx_1 =>
-                if Rx_0 = '0' then
+                if Rx_0_ren = '0' then
                     Ret <= Branch;
                 else
                     Ret <= PC1;
