@@ -20,7 +20,7 @@ architecture behavioral of Hazard_Detector is
 begin
     process(wbenable, memop, idrx, idry, wbregister)
     begin
-        if (wbenable = WBEnable_Yes and memop = MemOp_read and (idrx = wbregister(2 downto 0) or idrx = wbregister(2 downto 0))) then
+        if (wbenable = WBEnable_Yes and memop = MemOp_read and (idrx = wbregister(2 downto 0) or idry = wbregister(2 downto 0))) then
             exmwbclear <= '1';
             idhold     <= '1';
             pchold     <= '1';
