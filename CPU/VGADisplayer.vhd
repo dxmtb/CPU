@@ -8,7 +8,7 @@ entity VGADisplayer is
         reset   : in  std_logic;
         clk25   : out std_logic;
         rgb     : in  std_logic;
-        clk_50   : in  std_logic;
+        clk_50  : in  std_logic;
         hs, vs  : out std_logic;
         r, g, b : out std_logic_vector(2 downto 0);
         x_pos   : out XCoordinate;
@@ -114,15 +114,15 @@ begin
             g1 <= "000";
             b1 <= "000";
         elsif(clk'event and clk = '1')then
-          if rgb = '0' then
-            r1 <= "000";
-            g1 <= "000";
-            b1 <= "000";
-          else
-            r1 <= "111";
-            g1 <= "111";
-            b1 <= "111";
-          end if;
+            if rgb = '0' then
+                r1 <= "000";
+                g1 <= "000";
+                b1 <= "000";
+            else
+                r1 <= "111";
+                g1 <= "111";
+                b1 <= "111";
+            end if;
         end if;
     end process;
 

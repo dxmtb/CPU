@@ -21,7 +21,7 @@ entity DM is
         com_wrn        : out   std_logic := '1';
         -- com_tbre       : in    std_logic;
         com_tsre       : in    std_logic
-      );
+        );
 end DM;
 
 architecture behavioral of DM is

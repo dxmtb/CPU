@@ -8,7 +8,7 @@ entity CPU is
         click          : in    std_logic;
         clk_50         : in    std_logic;
         clk_11         : in    std_logic;
-        sw : in std_logic_vector(2 downto 0);
+        sw             : in    std_logic_vector(2 downto 0);
         RAM1_Addr      : out   std_logic_vector (17 downto 0);
         RAM1_EN        : out   std_logic;
         RAM1_WE        : out   std_logic;
@@ -25,9 +25,9 @@ entity CPU is
         com_tsre       : in    std_logic;
         com_wrn        : out   std_logic;
         LED            : out   std_logic_vector (15 downto 0);
-		--VGA
-        hs : out std_logic;
-        vs : out std_logic;
+        --VGA
+        hs             : out   std_logic;
+        vs             : out   std_logic;
 
         VGA_B : out std_logic_vector(2 downto 0);
         VGA_G : out std_logic_vector(2 downto 0);
@@ -39,12 +39,12 @@ architecture arch of CPU is
 --CoreDisplayer.vhd
     component CoreDisplayer is
         port (
-            clk                                                        : in  std_logic;
-            x_pos                                                      : in  XCoordinate;
-            y_pos                                                      : in  YCoordinate;
+            clk                                                             : in  std_logic;
+            x_pos                                                           : in  XCoordinate;
+            y_pos                                                           : in  YCoordinate;
             PC, SP, IH, reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, INS : in  std_logic_vector(15 downto 0);
-            T                                                          : in  std_logic;
-            rgb                                                        : out std_logic
+            T                                                               : in  std_logic;
+            rgb                                                             : out std_logic
             ) ;
     end component;  -- CoreDisplayer
 
@@ -132,8 +132,10 @@ architecture arch of CPU is
             wbenable1   : in  WBEnableType;
             wbregister2 : in  std_logic_vector(3 downto 0);
             wbenable2   : in  WBEnableType;
+            memdata     : in  MemDataType;
             forwarda    : out ForwardType := Forward_None;
-            forwardb    : out ForwardType := Forward_None
+            forwardb    : out ForwardType := Forward_None;
+            forwarde    : out ForwardType := Forward_None
             );
     end component;
 
@@ -178,30 +180,30 @@ architecture arch of CPU is
 --MUX_A.vhd
     component MUX_A is
         port (
-            Rx        : in  std_logic_vector (15 downto 0);
-            Ry        : in  std_logic_vector (15 downto 0);
-            SP        : in  std_logic_vector (15 downto 0);
-            Imm       : in  std_logic_vector (15 downto 0);
-            IH        : in  std_logic_vector (15 downto 0);
-            PC1       : in  std_logic_vector (15 downto 0);
-            WriteData : in  std_logic_vector (15 downto 0);
-            ALUout    : in  std_logic_vector (15 downto 0);
-            Op1Src    : in  Op1SrcType;
-            ForwardA  : in  ForwardType;
-            Ret       : out std_logic_vector (15 downto 0)
+            Rx             : in  std_logic_vector (15 downto 0);
+            Ry             : in  std_logic_vector (15 downto 0);
+            SP             : in  std_logic_vector (15 downto 0);
+            Imm            : in  std_logic_vector (15 downto 0);
+            IH             : in  std_logic_vector (15 downto 0);
+            PC1            : in  std_logic_vector (15 downto 0);
+            Data_From_WB   : in  std_logic_vector (15 downto 0);
+            Data_From_M_WB : in  std_logic_vector (15 downto 0);
+            Op1Src         : in  Op1SrcType;
+            ForwardA       : in  ForwardType;
+            Ret            : out std_logic_vector (15 downto 0)
             );
     end component;
 
 --MUX_B.vhd
     component MUX_B is
         port (
-            Imm       : in  std_logic_vector (15 downto 0);
-            Ry        : in  std_logic_vector (15 downto 0);
-            WriteData : in  std_logic_vector (15 downto 0);
-            ALUout    : in  std_logic_vector (15 downto 0);
-            Op2Src    : in  Op2SrcType;
-            ForwardB  : in  ForwardType;
-            Ret       : out std_logic_vector (15 downto 0)
+            Imm            : in  std_logic_vector (15 downto 0);
+            Ry             : in  std_logic_vector (15 downto 0);
+            Data_From_WB   : in  std_logic_vector (15 downto 0);
+            Data_From_M_WB : in  std_logic_vector (15 downto 0);
+            Op2Src         : in  Op2SrcType;
+            ForwardB       : in  ForwardType;
+            Ret            : out std_logic_vector (15 downto 0)
             );
     end component;
 
@@ -226,12 +228,16 @@ architecture arch of CPU is
     end component;
 
 --MUX_E.vhd
+    --MUX_E.vhd
     component MUX_E is
         port (
-            Rx      : in  std_logic_vector (15 downto 0);
-            Ry      : in  std_logic_vector (15 downto 0);
-            MemData : in  MemDataType;
-            Ret     : out std_logic_vector (15 downto 0)
+            Rx             : in  std_logic_vector (15 downto 0);
+            Ry             : in  std_logic_vector (15 downto 0);
+            Data_From_M_WB : in  std_logic_vector(15 downto 0);
+            Data_From_WB   : in  std_logic_vector(15 downto 0);
+            MemData        : in  MemDataType;
+            ForwardE       : in  ForwardType;
+            Ret            : out std_logic_vector (15 downto 0)
             );
     end component;
 
@@ -352,66 +358,67 @@ architecture arch of CPU is
             );
     end component;
 
-    signal Controller_IFRegs                              : IFRegsType;
-    signal Controller_IDRegs                              : IDRegsType;
-    signal Controller_EXRegs                              : EXRegsType;
-    signal Controller_MRegs                               : MRegsType;
-    signal Controller_WBRegs                              : WBRegsType;
-    signal DM_ram1_addr                                   : std_logic_vector(17 downto 0);
-    signal DM_ram1_en                                     : std_logic;
-    signal DM_ram1_we                                     : std_logic;
-    signal DM_ram1_oe                                     : std_logic;
-    signal DM_com_rdn                                     : std_logic;
-    signal DM_com_wrn                                     : std_logic;
-    signal EX_M_WB_Registers_out_EXRegs                   : EXRegsType;
-    signal EX_M_WB_Registers_out_MRegs                    : MRegsType;
-    signal EX_M_WB_Registers_out_WBRegs                   : WBRegsType;
-    signal EX_M_WB_Registers_out_data                     : EX_M_WB_Data;
-    signal Equal_Zero_ret                                 : std_logic;
-    signal Forward_Unit_forwarda                          : ForwardType;
-    signal Forward_Unit_forwardb                          : ForwardType;
-    signal Hazard_Detector_exmwbclear                     : std_logic;
-    signal Hazard_Detector_idhold                         : std_logic;
-    signal Hazard_Detector_pchold                         : std_logic;
-    signal ID_Registers_out_PC1                           : std_logic_vector(15 downto 0);
-    signal ID_Registers_out_INS                           : std_logic_vector(15 downto 0);
-    signal IM_ram2_addr                                   : std_logic_vector(17 downto 0);
-    signal IM_ram2_en                                     : std_logic;
-    signal IM_ram2_we                                     : std_logic;
-    signal IM_ram2_oe                                     : std_logic;
-    signal MUX_A_Ret                                      : std_logic_vector (15 downto 0);
-    signal MUX_B_Ret                                      : std_logic_vector (15 downto 0);
-    signal MUX_C_Ret                                      : std_logic_vector (3 downto 0);
-    signal MUX_D_Ret                                      : std_logic_vector (15 downto 0);
-    signal MUX_E_Ret                                      : std_logic_vector (15 downto 0);
-    signal MUX_PC_Ret                                     : std_logic_vector (15 downto 0);
-    signal M_WB_Registers_out_MRegs                       : MRegsType;
-    signal M_WB_Registers_out_WBRegs                      : WBRegsType;
-    signal M_WB_Registers_out_data                        : M_WB_Data;
-    signal PC_PC_OUT                                      : std_logic_vector (15 downto 0);
-    signal PC_NEW_PC_OUT                                  : std_logic_vector (15 downto 0);
-    signal RA_RA                                          : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg1_data                        : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg2_data                        : std_logic_vector(15 downto 0);
-    signal RegisterGroup_regIH_out                        : std_logic_vector(15 downto 0);
-    signal RegisterGroup_regSP_out                        : std_logic_vector(15 downto 0);
-    signal RegisterGroup_regT_out                         : std_logic;
-    signal RegisterGroup_reg0_out                         : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg1_out                         : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg2_out                         : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg3_out                         : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg4_out                         : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg5_out                         : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg6_out                         : std_logic_vector(15 downto 0);
-    signal RegisterGroup_reg7_out                         : std_logic_vector(15 downto 0);
-    signal SignExtend_imm_out                             : std_logic_vector(15 downto 0);
-    signal WB_Registers_out_WBRegs                        : WBRegsType;
-    signal WB_Registers_out_data                          : WB_Data;
-    signal adder_res                                      : std_logic_vector(15 downto 0);
-    signal alu_ALURes                                     : std_logic_vector(15 downto 0);
-    signal CoreDisplayer_rgb                              : std_logic;
-    signal VGADisplayer_x_pos                             : XCoordinate;
-    signal VGADisplayer_y_pos                             : YCoordinate;
+    signal Controller_IFRegs            : IFRegsType;
+    signal Controller_IDRegs            : IDRegsType;
+    signal Controller_EXRegs            : EXRegsType;
+    signal Controller_MRegs             : MRegsType;
+    signal Controller_WBRegs            : WBRegsType;
+    signal DM_ram1_addr                 : std_logic_vector(17 downto 0);
+    signal DM_ram1_en                   : std_logic;
+    signal DM_ram1_we                   : std_logic;
+    signal DM_ram1_oe                   : std_logic;
+    signal DM_com_rdn                   : std_logic;
+    signal DM_com_wrn                   : std_logic;
+    signal EX_M_WB_Registers_out_EXRegs : EXRegsType;
+    signal EX_M_WB_Registers_out_MRegs  : MRegsType;
+    signal EX_M_WB_Registers_out_WBRegs : WBRegsType;
+    signal EX_M_WB_Registers_out_data   : EX_M_WB_Data;
+    signal Equal_Zero_ret               : std_logic;
+    signal Forward_Unit_forwarda        : ForwardType;
+    signal Forward_Unit_forwardb        : ForwardType;
+    signal Forward_Unit_forwarde        : ForwardType;
+    signal Hazard_Detector_exmwbclear   : std_logic;
+    signal Hazard_Detector_idhold       : std_logic;
+    signal Hazard_Detector_pchold       : std_logic;
+    signal ID_Registers_out_PC1         : std_logic_vector(15 downto 0);
+    signal ID_Registers_out_INS         : std_logic_vector(15 downto 0);
+    signal IM_ram2_addr                 : std_logic_vector(17 downto 0);
+    signal IM_ram2_en                   : std_logic;
+    signal IM_ram2_we                   : std_logic;
+    signal IM_ram2_oe                   : std_logic;
+    signal MUX_A_Ret                    : std_logic_vector (15 downto 0);
+    signal MUX_B_Ret                    : std_logic_vector (15 downto 0);
+    signal MUX_C_Ret                    : std_logic_vector (3 downto 0);
+    signal MUX_D_Ret                    : std_logic_vector (15 downto 0);
+    signal MUX_E_Ret                    : std_logic_vector (15 downto 0);
+    signal MUX_PC_Ret                   : std_logic_vector (15 downto 0);
+    signal M_WB_Registers_out_MRegs     : MRegsType;
+    signal M_WB_Registers_out_WBRegs    : WBRegsType;
+    signal M_WB_Registers_out_data      : M_WB_Data;
+    signal PC_PC_OUT                    : std_logic_vector (15 downto 0);
+    signal PC_NEW_PC_OUT                : std_logic_vector (15 downto 0);
+    signal RA_RA                        : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg1_data      : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg2_data      : std_logic_vector(15 downto 0);
+    signal RegisterGroup_regIH_out      : std_logic_vector(15 downto 0);
+    signal RegisterGroup_regSP_out      : std_logic_vector(15 downto 0);
+    signal RegisterGroup_regT_out       : std_logic;
+    signal RegisterGroup_reg0_out       : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg1_out       : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg2_out       : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg3_out       : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg4_out       : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg5_out       : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg6_out       : std_logic_vector(15 downto 0);
+    signal RegisterGroup_reg7_out       : std_logic_vector(15 downto 0);
+    signal SignExtend_imm_out           : std_logic_vector(15 downto 0);
+    signal WB_Registers_out_WBRegs      : WBRegsType;
+    signal WB_Registers_out_data        : WB_Data;
+    signal adder_res                    : std_logic_vector(15 downto 0);
+    signal alu_ALURes                   : std_logic_vector(15 downto 0);
+    signal CoreDisplayer_rgb            : std_logic;
+    signal VGADisplayer_x_pos           : XCoordinate;
+    signal VGADisplayer_y_pos           : YCoordinate;
 
     signal EX_M_WB_Registers_in_data : EX_M_WB_Data;
     signal M_WB_Registers_in_data    : M_WB_Data;
@@ -423,36 +430,36 @@ architecture arch of CPU is
     signal not_RegisterGroup_regT_out : std_logic;
 
 begin
-     clk <= clk_11;
+     clk    <= clk_11;
      my_clk <= not click;
      process(sw, Forward_Unit_forwarda, WB_Registers_out_WBRegs)
      begin
-       if sw = "111" then
-         if Forward_Unit_forwarda = Forward_None then
-           LED(15 downto 14) <= "00";
-         elsif Forward_Unit_forwarda = Forward_ALURes then
-           LED(15 downto 14) <= "01";
-         elsif Forward_Unit_forwarda = Forward_Mem then
-           LED(15 downto 14) <= "11";
-         end if;
-         LED(13 downto 0) <= DM_ram1_addr(13 downto 0);
-       elsif sw = "110" then
-         if WB_Registers_out_WBRegs.WBEnable = WBEnable_Yes then
-           LED(15) <= '1';
+         if sw = "111" then
+             if Forward_Unit_forwarda = Forward_None then
+                 LED(15 downto 14) <= "00";
+             elsif Forward_Unit_forwarda = Forward_From_M_WB then
+                 LED(15 downto 14) <= "01";
+             elsif Forward_Unit_forwarda = Forward_From_WB then
+                 LED(15 downto 14) <= "11";
+             end if;
+             LED(13 downto 0) <= DM_ram1_addr(13 downto 0);
+         elsif sw = "110" then
+             if WB_Registers_out_WBRegs.WBEnable = WBEnable_Yes then
+                 LED(15) <= '1';
+             else
+                 LED(15) <= '0';
+             end if;
+             if Controller_MRegs.MemOp = MemOp_Read then
+                 LED(14) <= '1';
+             else
+                 LED(14) <= '0';
+             end if;
+         elsif sw = "101" then
+             LED(15 downto 12) <= WB_Registers_out_data.WBDst;
+             LED(11 downto 0)  <= MUX_D_Ret(11 downto 0);
          else
-           LED(15) <= '0';
+             LED <= (others => '1');
          end if;
-         if Controller_MRegs.MemOp = MemOp_Read then
-           LED(14) <= '1';
-         else
-           LED(14) <= '0';
-         end if;
-       elsif sw = "101" then
-         LED(15 downto 10) <= WB_Registers_out_data.WBDst;
-         LED(11 downto 0) <= MUX_D_Ret(11 downto 0);
-       else
-         LED <= (others => '1');
-       end if;
      end process;
 
      ID_Registers_out_Rx <= ID_Registers_out_INS(10 downto 8);
@@ -495,8 +502,8 @@ begin
          clk   => clk_50,
          x_pos => VGADisplayer_x_pos,
          y_pos => VGADisplayer_y_pos,
-         INS => RAM2_Data,
-		 PC    => PC_PC_OUT,
+         INS   => RAM2_Data,
+         PC    => PC_PC_OUT,
          IH    => RegisterGroup_regIH_out,
          SP    => RegisterGroup_regSP_out,
          reg0  => RegisterGroup_reg0_out,
@@ -612,27 +619,27 @@ begin
          );
 --MUX_A.vhd
      One_MUX_A : MUX_A port map (
-         Rx        => EX_M_WB_Registers_out_data.Rx,
-         Ry        => EX_M_WB_Registers_out_data.Ry,
-         SP        => EX_M_WB_Registers_out_data.SP,
-         Imm       => EX_M_WB_Registers_out_data.Imm,
-         IH        => EX_M_WB_Registers_out_data.IH,
-         PC1       => EX_M_WB_Registers_out_data.PC1,
-         WriteData => MUX_D_Ret,
-         ALUout    => M_WB_Registers_out_data.ALURes,
-         Op1Src    => EX_M_WB_Registers_out_EXRegs.Op1Src,
-         ForwardA  => Forward_Unit_forwarda,
-         Ret       => MUX_A_Ret
+         Rx             => EX_M_WB_Registers_out_data.Rx,
+         Ry             => EX_M_WB_Registers_out_data.Ry,
+         SP             => EX_M_WB_Registers_out_data.SP,
+         Imm            => EX_M_WB_Registers_out_data.Imm,
+         IH             => EX_M_WB_Registers_out_data.IH,
+         PC1            => EX_M_WB_Registers_out_data.PC1,
+         Data_From_WB   => MUX_D_Ret,
+         Data_From_M_WB => M_WB_Registers_out_data.ALURes,
+         Op1Src         => EX_M_WB_Registers_out_EXRegs.Op1Src,
+         ForwardA       => Forward_Unit_forwarda,
+         Ret            => MUX_A_Ret
          );
 --MUX_B.vhd
      One_MUX_B : MUX_B port map (
-         Imm       => EX_M_WB_Registers_out_data.Imm,
-         Ry        => EX_M_WB_Registers_out_data.Ry,
-         WriteData => MUX_D_Ret,
-         ALUout    => M_WB_Registers_out_data.ALURes,
-         Op2Src    => EX_M_WB_Registers_out_EXRegs.Op2Src,
-         ForwardB  => Forward_Unit_forwardb,
-         Ret       => MUX_B_Ret
+         Imm            => EX_M_WB_Registers_out_data.Imm,
+         Ry             => EX_M_WB_Registers_out_data.Ry,
+         Data_From_WB   => MUX_D_Ret,
+         Data_From_M_WB => M_WB_Registers_out_data.ALURes,
+         Op2Src         => EX_M_WB_Registers_out_EXRegs.Op2Src,
+         ForwardB       => Forward_Unit_forwardb,
+         Ret            => MUX_B_Ret
          );
 --MUX_C.vhd
      One_MUX_C : MUX_C port map (
@@ -651,10 +658,13 @@ begin
          );
 --MUX_E.vhd
      One_MUX_E : MUX_E port map (
-         Rx      => EX_M_WB_Registers_out_data.Rx,
-         Ry      => EX_M_WB_Registers_out_data.Ry,
-         MemData => EX_M_WB_Registers_out_EXRegs.MemData,
-         Ret     => MUX_E_Ret
+         Rx             => EX_M_WB_Registers_out_data.Rx,
+         Ry             => EX_M_WB_Registers_out_data.Ry,
+         Data_From_WB   => MUX_D_Ret,
+         Data_From_M_WB => M_WB_Registers_out_data.ALURes,
+         MemData        => EX_M_WB_Registers_out_EXRegs.MemData,
+         Ret            => MUX_E_Ret,
+         ForwardE       => Forward_Unit_forwarde
          );
 --Equal_Zero.vhd
      One_Equal_Zero : Equal_Zero port map (
@@ -731,17 +741,19 @@ begin
          ALUOp  => EX_M_WB_Registers_out_EXRegs.ALUOp,
          ALURes => alu_ALURes
          );
-    One_Forward_Unit : Forward_Unit port map (
-        op1src      => EX_M_WB_Registers_out_EXRegs.Op1Src,
-        op2src      => EX_M_WB_Registers_out_EXRegs.Op2Src,
-        rx          => EX_M_WB_Registers_out_data.Rx_WB,
-        ry          => EX_M_WB_Registers_out_data.Ry_WB,
-        wbregister1 => M_WB_Registers_out_data.WBDst,
-        wbsrc1      => M_WB_Registers_out_WBRegs.WBSrc,
-        wbenable1   => M_WB_Registers_out_WBRegs.WBEnable,
-        wbregister2 => WB_Registers_out_data.WBDst,
-        wbenable2   => WB_Registers_out_WBRegs.WBEnable,
-        forwarda    => Forward_Unit_forwarda,
-        forwardb    => Forward_Unit_forwardb
-        );
+     One_Forward_Unit : Forward_Unit port map (
+         op1src      => EX_M_WB_Registers_out_EXRegs.Op1Src,
+         op2src      => EX_M_WB_Registers_out_EXRegs.Op2Src,
+         rx          => EX_M_WB_Registers_out_data.Rx_WB,
+         ry          => EX_M_WB_Registers_out_data.Ry_WB,
+         wbregister1 => M_WB_Registers_out_data.WBDst,
+         wbsrc1      => M_WB_Registers_out_WBRegs.WBSrc,
+         wbenable1   => M_WB_Registers_out_WBRegs.WBEnable,
+         wbregister2 => WB_Registers_out_data.WBDst,
+         wbenable2   => WB_Registers_out_WBRegs.WBEnable,
+         memdata     => EX_M_WB_Registers_out_EXRegs.MemData,
+         forwarda    => Forward_Unit_forwarda,
+         forwardb    => Forward_Unit_forwardb,
+         forwarde    => Forward_Unit_forwarde
+         );
 end architecture;  -- arch

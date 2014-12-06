@@ -5,12 +5,12 @@ use work.common.all;
 
 entity CoreDisplayer is
     port (
-        clk                                                        : in  std_logic;
-        x_pos                                                      : in  XCoordinate;
-        y_pos                                                      : in  YCoordinate;
+        clk                                                             : in  std_logic;
+        x_pos                                                           : in  XCoordinate;
+        y_pos                                                           : in  YCoordinate;
         PC, SP, IH, reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, INS : in  std_logic_vector(15 downto 0);
-        T                                                          : in  std_logic;
-        rgb                                                        : out std_logic
+        T                                                               : in  std_logic;
+        rgb                                                             : out std_logic
         ) ;
 end entity;  -- CoreDisplayer
 
@@ -430,38 +430,38 @@ begin
                 end if;
             elsif y_pos >= 460 and y_pos < 480 then
                 if x_pos >= 0 and x_pos < 40 then
-                    rgb <= T;
+                    rgb <= T; 
                 elsif x_pos >= 40 and x_pos < 80 then
-                    rgb <= '0';
-                elsif x_pos >= 80 and x_pos < 120 then
-                    rgb <= '1';
-                elsif x_pos >= 120 and x_pos < 160 then
-                    rgb <= '0';
-                elsif x_pos >= 160 and x_pos < 200 then
-                    rgb <= '1';
-                elsif x_pos >= 200 and x_pos < 240 then
-                    rgb <= '0';
-                elsif x_pos >= 240 and x_pos < 280 then
-                    rgb <= '1';
-                elsif x_pos >= 280 and x_pos < 320 then
-                    rgb <= '0';
-                elsif x_pos >= 320 and x_pos < 360 then
-                    rgb <= '1';
-                elsif x_pos >= 360 and x_pos < 400 then
-                    rgb <= '0';
-                elsif x_pos >= 400 and x_pos < 440 then
-                    rgb <= '1';
-                elsif x_pos >= 440 and x_pos < 480 then
-                    rgb <= '0';
-                elsif x_pos >= 480 and x_pos < 520 then
-                    rgb <= '1';
-                elsif x_pos >= 520 and x_pos < 560 then
-                    rgb <= '0';
-                elsif x_pos >= 560 and x_pos < 600 then
-                    rgb <= '1';
-                elsif x_pos >= 600 and x_pos < 640 then
-                    rgb <= '0';
-                end if;
+                                 rgb <= '0';
+                             elsif x_pos >= 80 and x_pos < 120 then
+                                 rgb <= '1';
+                             elsif x_pos >= 120 and x_pos < 160 then
+                                 rgb <= '0';
+                             elsif x_pos >= 160 and x_pos < 200 then
+                                 rgb <= '1';
+                             elsif x_pos >= 200 and x_pos < 240 then
+                                 rgb <= '0';
+                             elsif x_pos >= 240 and x_pos < 280 then
+                                 rgb <= '1';
+                             elsif x_pos >= 280 and x_pos < 320 then
+                                 rgb <= '0';
+                             elsif x_pos >= 320 and x_pos < 360 then
+                                 rgb <= '1';
+                             elsif x_pos >= 360 and x_pos < 400 then
+                                 rgb <= '0';
+                             elsif x_pos >= 400 and x_pos < 440 then
+                                 rgb <= '1';
+                             elsif x_pos >= 440 and x_pos < 480 then
+                                 rgb <= '0';
+                             elsif x_pos >= 480 and x_pos < 520 then
+                                 rgb <= '1';
+                             elsif x_pos >= 520 and x_pos < 560 then
+                                 rgb <= '0';
+                             elsif x_pos >= 560 and x_pos < 600 then
+                                 rgb <= '1';
+                             elsif x_pos >= 600 and x_pos < 640 then
+                                 rgb <= '0';
+                             end if; 
             end if;
         end if;
     end process;

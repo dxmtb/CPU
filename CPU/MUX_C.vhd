@@ -23,10 +23,10 @@ begin
                 Ret <= "0" & Rx;
             when WBDst_Ry =>
                 -- Zero extend
-                Ret  <= "0" & Ry;
+                Ret <= "0" & Ry;
             when WBDst_Rz =>
                 -- Zero extend
-                Ret  <= "0" & Rz;
+                Ret <= "0" & Rz;
             when WBDst_SP =>
                 Ret <= SP_index;
             when WBDst_T =>
@@ -34,7 +34,7 @@ begin
             when WBDst_IH =>
                 Ret <= IH_index;
             when others =>
-              -- To avoid latch
+                -- To avoid latch
                 Ret <= (others => '0');
                 null;
         end case;

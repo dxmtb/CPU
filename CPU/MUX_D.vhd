@@ -22,7 +22,7 @@ begin
             when WBSrc_Mem =>
                 Ret <= Mem;
             when others =>
-              -- To avoid latch
+                -- To avoid latch
                 Ret <= ALURes;
                 null;
         end case;

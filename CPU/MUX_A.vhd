@@ -5,23 +5,23 @@ use work.common.all;
 
 entity MUX_A is
     port (
-        Rx        : in  std_logic_vector (15 downto 0);
-        Ry        : in  std_logic_vector (15 downto 0);
-        SP        : in  std_logic_vector (15 downto 0);
-        Imm       : in  std_logic_vector (15 downto 0);
-        IH        : in  std_logic_vector (15 downto 0);
-        PC1       : in  std_logic_vector (15 downto 0);
-        WriteData : in  std_logic_vector (15 downto 0);
-        ALUout    : in  std_logic_vector (15 downto 0);
-        Op1Src    : in  Op1SrcType;
-        ForwardA  : in  ForwardType;
-        Ret       : out std_logic_vector (15 downto 0)
+        Rx             : in  std_logic_vector (15 downto 0);
+        Ry             : in  std_logic_vector (15 downto 0);
+        SP             : in  std_logic_vector (15 downto 0);
+        Imm            : in  std_logic_vector (15 downto 0);
+        IH             : in  std_logic_vector (15 downto 0);
+        PC1            : in  std_logic_vector (15 downto 0);
+        Data_From_WB   : in  std_logic_vector (15 downto 0);
+        Data_From_M_WB : in  std_logic_vector (15 downto 0);
+        Op1Src         : in  Op1SrcType;
+        ForwardA       : in  ForwardType;
+        Ret            : out std_logic_vector (15 downto 0)
         );
 end MUX_A;
 
 architecture Behaviour of MUX_A is
 begin
-    process(Rx, Ry, SP, Imm, IH, PC1, WriteData, ALUout, Op1Src, ForwardA)
+    process(Rx, Ry, SP, Imm, IH, PC1, Data_From_WB, Data_From_M_WB, Op1Src, ForwardA)
     begin
         case ForwardA is
             when Forward_None =>
@@ -41,14 +41,13 @@ begin
                     when others =>
                         Ret <= Rx;
                 end case;
-            when Forward_Mem =>
-                Ret <= WriteData;
-            when Forward_ALURes =>
-                Ret <= ALUout;
+            when Forward_From_WB =>
+                Ret <= Data_From_WB;
+            when Forward_From_M_WB =>
+                Ret <= Data_From_M_WB;
             when others =>
-              -- To Avoid latch
+                -- To Avoid latch
                 Ret <= Rx;
-                null;
         end case;
     end process;
 end architecture;  -- Behaviour
