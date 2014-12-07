@@ -21,17 +21,17 @@ entity DM is
         com_wrn        : out   std_logic := '1';
         com_tbre       : in    std_logic;
         com_tsre       : in    std_logic;
-        stop_clk        : out std_logic := '0';
-        status_out        : out StatusType
+        stop_clk       : out   std_logic := '0';
+        status_out     : out   StatusType
         );
 end DM;
 
 architecture behavioral of DM is
     signal status : StatusType := Normal;
-    signal cache : std_logic_vector(15 downto 0);
+    signal cache  : std_logic_vector(15 downto 0);
 begin
-    stop_clk <= '0' when status = Normal else '1';
-	 status_out <= status;
+    stop_clk <= '0' when status = Normal else '1'; 
+  status_out <= status;
     process (dm_addr)
     begin
         ram1_addr <= "00" & dm_addr;
@@ -76,10 +76,10 @@ begin
                                 ram1_oe <= '1';
                                 com_rdn <= '1';
                                 com_wrn <= '1';
-                                status <= Send1;
+                                status  <= Send1;
                                 --com_wrn     <= '0';
                                 --dm_data_out <= dm_data_in;
-                                cache <= dm_data_in;
+                                cache   <= dm_data_in;
                             else
                                 com_rdn     <= '1';
                                 com_wrn     <= '1';
@@ -90,29 +90,29 @@ begin
                         when others =>
                             ram1_en <= '1';
                     end case;
-                if (clk = '1') then
-                    ram1_en <= '1';
-                    ram1_we <= '1';
-                    ram1_oe <= '1';
-                    com_rdn <= '1';
+                when Send1 =>
+                    com_wrn     <= '0';
+                    dm_data_out <= cache;
+                    status      <= Send2;
+                when Send2 =>
                     com_wrn <= '1';
-                end if;
-            when Send1 =>
-                com_wrn <= '0';
-                dm_data_out <= cache;
-                status <= Send2;
-            when Send2 =>
-                com_wrn <= '1';
-                status <= Send3;
-            when Send3 =>
-                if com_tbre = '1' then
+                    status  <= Send3;
+                when Send3 =>
+                    if com_tbre = '1' then
+                        status <= Normal;
+                    else
+                        status <= Send3;
+                    end if;
+                when others =>
                     status <= Normal;
-                else
-                    status <= Send3;
-                end if;
-            when others =>
-                status <= Normal;
-        end case;
-    end if;
+            end case;
+        end if;
+        if (clk = '1' and status = Normal) then
+            ram1_en <= '1';
+            ram1_we <= '1';
+            ram1_oe <= '1';
+            com_rdn <= '1';
+            com_wrn <= '1';
+        end if;
     end process;
 end behavioral;
