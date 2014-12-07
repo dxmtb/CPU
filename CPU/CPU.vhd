@@ -9,7 +9,7 @@ entity CPU is
         clk_50         : in    std_logic;
         clk_11         : in    std_logic;
         sw             : in    std_logic_vector(2 downto 0);
-        RAM1_Addr      : out   std_logic_vector (17 downto 0);
+        RAM1_Addr      : out   std_logic_vector (17 downto 0) := (others => 'Z');
         RAM1_EN        : out   std_logic;
         RAM1_WE        : out   std_logic;
         RAM1_OE        : out   std_logic;
@@ -76,27 +76,27 @@ architecture arch of CPU is
     end component;  -- Controller
 
 
---DM.vhd
-    component DM is
-        port (
-            clk            : in    std_logic;
-            memop          : in    MemOpType;
-            dm_addr        : in    std_logic_vector(15 downto 0);
-            dm_data_in     : in    std_logic_vector(15 downto 0);
-            dm_data_out    : inout std_logic_vector(15 downto 0);
-            ram1_addr      : out   std_logic_vector(17 downto 0);
-            ram1_en        : out   std_logic := '1';
-            ram1_we        : out   std_logic := '1';
-            ram1_oe        : out   std_logic := '1';
-            com_data_ready : in    std_logic;
-            com_rdn        : out   std_logic := '1';
-            com_wrn        : out   std_logic := '1';
-            com_tbre       : in    std_logic;
-            com_tsre       : in    std_logic;
-            stop_clk       : out   std_logic := '0';
-            status_out     : out   StatusType
-            );
-    end component;
+----DM.vhd
+--    component DM is
+--        port (
+--            clk            : in    std_logic;
+--            memop          : in    MemOpType;
+--            dm_addr        : in    std_logic_vector(15 downto 0);
+--            dm_data_in     : in    std_logic_vector(15 downto 0);
+--            dm_data_out    : inout std_logic_vector(15 downto 0);
+--            ram1_addr      : out   std_logic_vector(17 downto 0);
+--            ram1_en        : out   std_logic := '1';
+--            ram1_we        : out   std_logic := '1';
+--            ram1_oe        : out   std_logic := '1';
+--            com_data_ready : in    std_logic;
+--            com_rdn        : out   std_logic := '1';
+--            com_wrn        : out   std_logic := '1';
+--            com_tbre       : in    std_logic;
+--            com_tsre       : in    std_logic;
+--            stop_clk       : out   std_logic := '0';
+--            status_out     : out   StatusType
+--            );
+--    end component;
 
 --EX_M_WB_Registers.vhd
     component EX_M_WB_Registers is
@@ -150,6 +150,7 @@ architecture arch of CPU is
             idrx       : in  std_logic_vector(2 downto 0);
             idry       : in  std_logic_vector(2 downto 0);
             wbregister : in  std_logic_vector(3 downto 0);
+            MemAddr    : in  std_logic_vector(15 downto 0);
             exmwbclear : out std_logic := '0';
             idhold     : out std_logic := '0';
             pchold     : out std_logic := '0'
@@ -168,17 +169,44 @@ architecture arch of CPU is
             ) ;
     end component;
 
+--Ram_Handler.vhd
+component Ram_Handler is
+    port (
+        clk            : in    std_logic;
+        memop          : in    MemOpType;
+        dm_addr        : in    std_logic_vector(15 downto 0);
+        im_addr        : in    std_logic_vector(15 downto 0);
+        data_in        : in    std_logic_vector(15 downto 0);
+        ram1_data_out    : inout   std_logic_vector(15 downto 0);
+        ram2_data_out    : inout   std_logic_vector(15 downto 0);
+        dm_data_out     :  out std_logic_vector(15 downto 0);
+        ram2_addr      : out   std_logic_vector(17 downto 0);
+        ram1_en        : out   std_logic := '1';
+        ram1_we        : out   std_logic := '1';
+        ram1_oe        : out   std_logic := '1';
+        ram2_en        : out   std_logic := '1';
+        ram2_we        : out   std_logic := '1';
+        ram2_oe        : out   std_logic := '1';
+        com_data_ready : in    std_logic;
+        com_rdn        : out   std_logic := '1';
+        com_wrn        : out   std_logic := '1';
+        com_tbre       : in    std_logic;
+        com_tsre       : in    std_logic;
+        stop_clk       : out   std_logic := '0';
+        status_out     : out   StatusType
+        );
+end component;
 
---IM.vhd
-    component IM is
-        port (clk         : in    std_logic;
-              im_addr     : in    std_logic_vector(15 downto 0);
-              im_data_out : inout std_logic_vector(15 downto 0) := high_resist;
-              ram2_addr   : out   std_logic_vector(17 downto 0);
-              ram2_en     : out   std_logic                     := '1';
-              ram2_we     : out   std_logic                     := '1';
-              ram2_oe     : out   std_logic                     := '1');
-    end component;
+----IM.vhd
+--    component IM is
+--        port (clk         : in    std_logic;
+--              im_addr     : in    std_logic_vector(15 downto 0);
+--              im_data_out : inout std_logic_vector(15 downto 0) := high_resist;
+--              ram2_addr   : out   std_logic_vector(17 downto 0);
+--              ram2_en     : out   std_logic                     := '1';
+--              ram2_we     : out   std_logic                     := '1';
+--              ram2_oe     : out   std_logic                     := '1');
+--    end component;
 
 --MUX_A.vhd
     component MUX_A is
@@ -366,12 +394,12 @@ architecture arch of CPU is
     signal Controller_EXRegs            : EXRegsType;
     signal Controller_MRegs             : MRegsType;
     signal Controller_WBRegs            : WBRegsType;
-    signal DM_ram1_addr                 : std_logic_vector(17 downto 0);
-    signal DM_ram1_en                   : std_logic;
-    signal DM_ram1_we                   : std_logic;
-    signal DM_ram1_oe                   : std_logic;
-    signal DM_com_rdn                   : std_logic;
-    signal DM_com_wrn                   : std_logic;
+--    signal DM_ram1_addr                 : std_logic_vector(17 downto 0);
+--    signal DM_ram1_en                   : std_logic;
+--    signal DM_ram1_we                   : std_logic;
+--    signal DM_ram1_oe                   : std_logic;
+--    signal DM_com_rdn                   : std_logic;
+--    signal DM_com_wrn                   : std_logic;
     signal EX_M_WB_Registers_out_EXRegs : EXRegsType;
     signal EX_M_WB_Registers_out_MRegs  : MRegsType;
     signal EX_M_WB_Registers_out_WBRegs : WBRegsType;
@@ -385,10 +413,10 @@ architecture arch of CPU is
     signal Hazard_Detector_pchold       : std_logic;
     signal ID_Registers_out_PC1         : std_logic_vector(15 downto 0);
     signal ID_Registers_out_INS         : std_logic_vector(15 downto 0);
-    signal IM_ram2_addr                 : std_logic_vector(17 downto 0);
-    signal IM_ram2_en                   : std_logic;
-    signal IM_ram2_we                   : std_logic;
-    signal IM_ram2_oe                   : std_logic;
+--    signal IM_ram2_addr                 : std_logic_vector(17 downto 0);
+--    signal IM_ram2_en                   : std_logic;
+--    signal IM_ram2_we                   : std_logic;
+--    signal IM_ram2_oe                   : std_logic;
     signal MUX_A_Ret                    : std_logic_vector (15 downto 0);
     signal MUX_B_Ret                    : std_logic_vector (15 downto 0);
     signal MUX_C_Ret                    : std_logic_vector (3 downto 0);
@@ -422,6 +450,16 @@ architecture arch of CPU is
     signal CoreDisplayer_rgb            : std_logic;
     signal VGADisplayer_x_pos           : XCoordinate;
     signal VGADisplayer_y_pos           : YCoordinate;
+    signal Ram_Handler_ram1_data_out : std_logic_vector(15 downto 0);
+signal Ram_Handler_ram2_data_out : std_logic_vector(15 downto 0);
+signal Ram_Handler_dm_data_out : std_logic_vector(15 downto 0);
+signal Ram_Handler_ram2_addr : std_logic_vector(17 downto 0);
+signal Ram_Handler_ram1_en : std_logic := '1';
+signal Ram_Handler_ram1_we : std_logic := '1';
+signal Ram_Handler_ram1_oe : std_logic := '1';
+signal Ram_Handler_ram2_en : std_logic := '1';
+signal Ram_Handler_ram2_we : std_logic := '1';
+signal Ram_Handler_ram2_oe : std_logic := '1';
 
     signal EX_M_WB_Registers_in_data : EX_M_WB_Data;
     signal M_WB_Registers_in_data    : M_WB_Data;
@@ -437,25 +475,25 @@ architecture arch of CPU is
     signal status_out : StatusType;
 
 begin
-     clk    <= my_clk;
-	  --my_clk <= click;
-     process(clk_50)
-     begin
-       if (rising_edge(clk_50)) then
-         if counter = 25 then
-           counter <= 0;
-           my_clk <= not my_clk;
-         else
-           counter <= counter + 1;
-         end if;
-       end if;
-     end process;
-     process(my_clk, stop_clk)
-     begin
-         if stop_clk = '0' then
-             filtered_clk <= my_clk;
-         end if;
-     end process;
+     clk <= my_clk; 
+         --my_clk <= click;
+         process(clk_50)
+         begin
+             if (rising_edge(clk_50)) then
+                 if counter = 25 then
+                     counter <= 0;
+                     my_clk  <= not my_clk;
+                 else
+                     counter <= counter + 1;
+                 end if;
+             end if;
+         end process; 
+             process(my_clk, stop_clk)
+             begin
+                  if stop_clk = '0' then
+                      filtered_clk <= my_clk;
+                  end if;
+             end process;
      --my_clk <= not click;
      process(sw, stop_clk)
      begin
@@ -474,9 +512,9 @@ begin
                            else
                                LED(14 downto 12) <= "111";
                            end if;
-                           LED(11) <= filtered_clk;
-                           LED(10) <= my_clk;
-                               LED(9 downto 0) <= (others => '1');
+                           LED(11)         <= filtered_clk;
+                           LED(10)         <= my_clk;
+                           LED(9 downto 0) <= (others => '1');
          else
              LED <= (others => '1');
          end if;
@@ -507,16 +545,13 @@ begin
 
      not_RegisterGroup_regT_out <= not RegisterGroup_regT_out;
 
-     RAM1_Addr <= DM_ram1_addr;
-     RAM1_EN   <= DM_ram1_en;
-     RAM1_WE   <= DM_ram1_we;
-     RAM1_OE   <= DM_ram1_oe;
-     RAM2_Addr <= IM_ram2_addr;
-     RAM2_EN   <= IM_ram2_en;
-     RAM2_WE   <= IM_ram2_we;
-     RAM2_OE   <= IM_ram2_oe;
-     com_rdn   <= DM_com_rdn;
-     com_wrn   <= DM_com_wrn;
+     RAM1_EN   <= Ram_Handler_ram1_en;
+     RAM1_WE   <= Ram_Handler_ram1_we;
+     RAM1_OE   <= Ram_Handler_ram1_oe;
+     RAM2_Addr <= Ram_Handler_ram2_addr;
+     RAM2_EN   <= Ram_Handler_ram2_en;
+     RAM2_WE   <= Ram_Handler_ram2_we;
+     RAM2_OE   <= Ram_Handler_ram2_oe;
 --CoreDisplayer.vhd
      One_CoreDisplayer : CoreDisplayer port map (
          clk   => clk_50,
@@ -552,34 +587,34 @@ begin
          y_pos  => VGADisplayer_y_pos
          );
 --DM.vhd
-     One_DM : DM port map (
-         clk            => clk,
-         memop          => M_WB_Registers_out_MRegs.MemOp,
-         dm_addr        => M_WB_Registers_out_data.ALURes,
-         dm_data_in     => M_WB_Registers_out_data.MemData,
-         dm_data_out    => RAM1_Data,
-         ram1_addr      => DM_ram1_addr,
-         ram1_en        => DM_ram1_en,
-         ram1_we        => DM_ram1_we,
-         ram1_oe        => DM_ram1_oe,
-         com_data_ready => com_data_ready,
-         com_rdn        => DM_com_rdn,
-         com_wrn        => DM_com_wrn,
-         com_tbre       => com_tbre,
-         com_tsre       => com_tsre,
-         stop_clk       => stop_clk,
-         status_out     => status_out
-         );
---IM.vhd
-     One_IM : IM port map (
-         clk         => clk,
-         im_addr     => PC_PC_OUT,
-         im_data_out => RAM2_Data,
-         ram2_addr   => IM_ram2_addr,
-         ram2_en     => IM_ram2_en,
-         ram2_we     => IM_ram2_we,
-         ram2_oe     => IM_ram2_oe
-         );
+--     One_DM : DM port map (
+--         clk            => clk,
+--         memop          => M_WB_Registers_out_MRegs.MemOp,
+--         dm_addr        => M_WB_Registers_out_data.ALURes,
+--         dm_data_in     => M_WB_Registers_out_data.MemData,
+--         dm_data_out    => RAM1_Data,
+--         ram1_addr      => DM_ram1_addr,
+--         ram1_en        => DM_ram1_en,
+--         ram1_we        => DM_ram1_we,
+--         ram1_oe        => DM_ram1_oe,
+--         com_data_ready => com_data_ready,
+--         com_rdn        => DM_com_rdn,
+--         com_wrn        => DM_com_wrn,
+--         com_tbre       => com_tbre,
+--         com_tsre       => com_tsre,
+--         stop_clk       => stop_clk,
+--         status_out     => status_out
+--         );
+----IM.vhd
+--     One_IM : IM port map (
+--         clk         => clk,
+--         im_addr     => PC_PC_OUT,
+--         im_data_out => RAM2_Data,
+--         ram2_addr   => IM_ram2_addr,
+--         ram2_en     => IM_ram2_en,
+--         ram2_we     => IM_ram2_we,
+--         ram2_oe     => IM_ram2_oe
+--         );
 
 --PC.vhd
      One_PC : PC port map (
@@ -603,6 +638,7 @@ begin
          idrx       => ID_Registers_out_Rx,
          idry       => ID_Registers_out_Ry,
          wbregister => MUX_C_Ret,
+         MemAddr    => M_WB_Registers_out_data.ALURes,
          exmwbclear => Hazard_Detector_exmwbclear,
          idhold     => Hazard_Detector_idhold,
          pchold     => Hazard_Detector_pchold
@@ -778,4 +814,29 @@ begin
          forwardb    => Forward_Unit_forwardb,
          forwarde    => Forward_Unit_forwarde
          );
+--Ram_Handler.vhd
+One_Ram_Handler : Ram_Handler port map (
+clk => clk,
+         memop          => M_WB_Registers_out_MRegs.MemOp,
+         dm_addr        => M_WB_Registers_out_data.ALURes,
+         im_addr     => PC_PC_OUT,
+         data_in     => M_WB_Registers_out_data.MemData,
+ram1_data_out => Ram_Handler_ram1_data_out,
+ram2_data_out => Ram_Handler_ram2_data_out,
+dm_data_out => Ram_Handler_dm_data_out,
+ram2_addr => Ram_Handler_ram2_addr,
+ram1_en => Ram_Handler_ram1_en,
+ram1_we => Ram_Handler_ram1_we,
+ram1_oe => Ram_Handler_ram1_oe,
+ram2_en => Ram_Handler_ram2_en,
+ram2_we => Ram_Handler_ram2_we,
+ram2_oe => Ram_Handler_ram2_oe,
+com_data_ready => com_data_ready,
+com_rdn => com_rdn,
+com_wrn => com_wrn,
+com_tbre => com_tbre,
+com_tsre => com_tsre,
+stop_clk => stop_clk,
+status_out => status_out
+);
 end architecture;  -- arch
