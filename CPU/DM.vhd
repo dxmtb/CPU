@@ -31,12 +31,12 @@ architecture behavioral of DM is
     signal cache  : std_logic_vector(15 downto 0);
 begin
     stop_clk <= '0' when status = Normal else '1'; 
-  status_out <= status;
+    status_out <= status;
     process (dm_addr)
     begin
         ram1_addr <= "00" & dm_addr;
     end process;
-    process (clk)
+    process (clk, status)
     begin
         if (clk'event and clk = '0') then
             case Status is
@@ -90,13 +90,6 @@ begin
                         when others =>
                             ram1_en <= '1';
                     end case;
-                    if (clk = '1') then
-                        ram1_en <= '1';
-                        ram1_we <= '1';
-                        ram1_oe <= '1';
-                        com_rdn <= '1';
-                        com_wrn <= '1';
-                    end if;
                 when Send1 =>
                     com_wrn     <= '0';
                     dm_data_out <= cache;
@@ -119,6 +112,11 @@ begin
                 when others =>
                     status <= Normal;
             end case;
+        end if;
+        if (clk = '1') then
+            ram1_en <= '1';
+            ram1_we <= '1';
+            ram1_oe <= '1';
         end if;
     end process;
 end behavioral;

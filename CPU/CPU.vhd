@@ -438,11 +438,11 @@ architecture arch of CPU is
 
 begin
      clk    <= my_clk;
-	  --my_clk <= click;
+	  --my_clk <= not click;
      process(clk_50)
      begin
        if (rising_edge(clk_50)) then
-         if counter = 25 then
+         if counter = 10000000 then
            counter <= 0;
            my_clk <= not my_clk;
          else
