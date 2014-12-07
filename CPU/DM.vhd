@@ -20,15 +20,18 @@ entity DM is
         com_rdn        : out   std_logic := '1';
         com_wrn        : out   std_logic := '1';
         com_tbre       : in    std_logic;
-        com_tsre       : in    std_logic
+        com_tsre       : in    std_logic;
+        stop_clk        : out std_logic := '0';
+        status_out        : out StatusType
         );
 end DM;
 
 architecture behavioral of DM is
-    type StatusType is (Normal, Send1, Send2, Send3, Send4);
     signal status : StatusType := Normal;
     signal cache : std_logic_vector(15 downto 0);
 begin
+    stop_clk <= '0' when status = Normal else '1';
+	 status_out <= status;
     process (dm_addr)
     begin
         ram1_addr <= "00" & dm_addr;

@@ -24,14 +24,14 @@ entity CPU is
         com_tbre       : in    std_logic;
         com_tsre       : in    std_logic;
         com_wrn        : out   std_logic;
-        LED            : out   std_logic_vector (15 downto 0)
+        LED            : out   std_logic_vector (15 downto 0);
         --VGA
---        hs             : out   std_logic;
---        vs             : out   std_logic;
---
---        VGA_B : out std_logic_vector(2 downto 0);
---        VGA_G : out std_logic_vector(2 downto 0);
---        VGA_R : out std_logic_vector(2 downto 0)
+        hs             : out   std_logic;
+        vs             : out   std_logic;
+
+        VGA_B : out std_logic_vector(2 downto 0);
+        VGA_G : out std_logic_vector(2 downto 0);
+        VGA_R : out std_logic_vector(2 downto 0)
         );
 end entity;  -- CPU
 
@@ -92,7 +92,10 @@ architecture arch of CPU is
             com_rdn        : out   std_logic := '1';
             com_wrn        : out   std_logic := '1';
             com_tbre       : in    std_logic;
-            com_tsre       : in    std_logic);
+            com_tsre       : in    std_logic;
+        stop_clk        : out std_logic := '0';
+        status_out        : out StatusType
+    );
     end component;
 
 --EX_M_WB_Registers.vhd
@@ -426,17 +429,20 @@ architecture arch of CPU is
 
     signal ID_Registers_out_Rx, ID_Registers_out_Ry, ID_Registers_out_Rz : std_logic_vector(2 downto 0);
 
-    signal clk, my_clk                : std_logic;
+    signal clk, my_clk, filtered_clk                : std_logic;
     signal not_RegisterGroup_regT_out : std_logic;
 
     signal counter : integer range 0 to 50000000;
+    signal stop_clk : std_logic;
+    signal status_out        : StatusType;
 
 begin
-     clk    <= clk_11;
+     clk    <= my_clk;
+	  --my_clk <= click;
      process(clk_50)
      begin
        if (rising_edge(clk_50)) then
-         if counter = 250000 then
+         if counter = 25000000 then
            counter <= 0;
            my_clk <= not my_clk;
          else
@@ -444,34 +450,33 @@ begin
          end if;
        end if;
      end process;
+     process(my_clk, stop_clk)
+     begin
+         if stop_clk = '0' then
+             filtered_clk <= my_clk;
+         end if;
+     end process;
      --my_clk <= not click;
-     process(sw, Forward_Unit_forwarda, WB_Registers_out_WBRegs, MUX_D_Ret)
+     process(sw, stop_clk)
      begin
          if sw = "111" then
-             if Forward_Unit_forwarda = Forward_None then
-                 LED(15 downto 14) <= "00";
-             elsif Forward_Unit_forwarda = Forward_From_M_WB then
-                 LED(15 downto 14) <= "01";
-             elsif Forward_Unit_forwarda = Forward_From_WB then
-                 LED(15 downto 14) <= "11";
-             end if;
-             LED(13 downto 0) <= DM_ram1_addr(13 downto 0);
-         elsif sw = "110" then
-             if WB_Registers_out_WBRegs.WBEnable = WBEnable_Yes then
-                 LED(15) <= '1';
-             else
-                 LED(15) <= '0';
-             end if;
-             if Controller_MRegs.MemOp = MemOp_Read then
-                 LED(14) <= '1';
-             else
-                 LED(14) <= '0';
-             end if;
-         elsif sw = "101" then
-             LED(15 downto 12) <= WB_Registers_out_data.WBDst;
-             LED(11 downto 0)  <= MUX_D_Ret(11 downto 0);
+				LED(15) <= stop_clk;
+				LED(14 downto 0) <= (others => '1');
+                if status_out = Normal then
+                    LED(14 downto 12) <= "000";
+                elsif status_out = Send1 then
+                    LED(14 downto 12) <= "000";
+                elsif status_out = Send2 then
+                    LED(14 downto 12) <= "001";
+                elsif status_out = Send3 then
+                    LED(14 downto 12) <= "010";
+                elsif status_out = Send4 then
+                    LED(14 downto 12) <= "011";
+                else
+                    LED(14 downto 12) <= "111";
+                end if;
          else
-             LED <= (others => '1');
+            LED <= (others => '1');
          end if;
      end process;
 
@@ -510,40 +515,40 @@ begin
      RAM2_OE   <= IM_ram2_oe;
      com_rdn   <= DM_com_rdn;
      com_wrn   <= DM_com_wrn;
-----CoreDisplayer.vhd
---     One_CoreDisplayer : CoreDisplayer port map (
---         clk   => clk_50,
---         x_pos => VGADisplayer_x_pos,
---         y_pos => VGADisplayer_y_pos,
---         INS   => RAM2_Data,
---         PC    => PC_PC_OUT,
---         IH    => RegisterGroup_regIH_out,
---         SP    => RegisterGroup_regSP_out,
---         reg0  => RegisterGroup_reg0_out,
---         reg1  => RegisterGroup_reg1_out,
---         reg2  => RegisterGroup_reg2_out,
---         reg3  => RegisterGroup_reg3_out,
---         reg4  => RegisterGroup_reg4_out,
---         reg5  => RegisterGroup_reg5_out,
---         reg6  => RegisterGroup_reg6_out,
---         reg7  => RegisterGroup_reg7_out,
---         T     => RegisterGroup_regT_out,
---         rgb   => CoreDisplayer_rgb
---         );
-----VGADisplayer.vhd
---     One_VGADisplayer : VGADisplayer port map (
---         reset  => '1',
---         clk25  => open,
---         rgb    => CoreDisplayer_rgb,
---         clk_50 => clk_50,
---         hs     => hs,
---         vs     => vs,
---         r      => VGA_R,
---         g      => VGA_G,
---         b      => VGA_B,
---         x_pos  => VGADisplayer_x_pos,
---         y_pos  => VGADisplayer_y_pos
---         );
+--CoreDisplayer.vhd
+     One_CoreDisplayer : CoreDisplayer port map (
+         clk   => clk_50,
+         x_pos => VGADisplayer_x_pos,
+         y_pos => VGADisplayer_y_pos,
+         INS   => RAM2_Data,
+         PC    => PC_PC_OUT,
+         IH    => RegisterGroup_regIH_out,
+         SP    => RegisterGroup_regSP_out,
+         reg0  => RegisterGroup_reg0_out,
+         reg1  => RegisterGroup_reg1_out,
+         reg2  => RegisterGroup_reg2_out,
+         reg3  => RegisterGroup_reg3_out,
+         reg4  => RegisterGroup_reg4_out,
+         reg5  => RegisterGroup_reg5_out,
+         reg6  => RegisterGroup_reg6_out,
+         reg7  => RegisterGroup_reg7_out,
+         T     => RegisterGroup_regT_out,
+         rgb   => CoreDisplayer_rgb
+         );
+--VGADisplayer.vhd
+     One_VGADisplayer : VGADisplayer port map (
+         reset  => '1',
+         clk25  => open,
+         rgb    => CoreDisplayer_rgb,
+         clk_50 => clk_50,
+         hs     => hs,
+         vs     => vs,
+         r      => VGA_R,
+         g      => VGA_G,
+         b      => VGA_B,
+         x_pos  => VGADisplayer_x_pos,
+         y_pos  => VGADisplayer_y_pos
+         );
 --DM.vhd
      One_DM : DM port map (
          clk            => clk,
@@ -559,7 +564,9 @@ begin
          com_rdn        => DM_com_rdn,
          com_wrn        => DM_com_wrn,
          com_tbre       => com_tbre,
-         com_tsre       => com_tsre
+         com_tsre       => com_tsre,
+         stop_clk => stop_clk,
+         status_out => status_out
          );
 --IM.vhd
      One_IM : IM port map (
@@ -576,13 +583,13 @@ begin
      One_PC : PC port map (
          PC_IN      => MUX_PC_Ret,
          pchold     => Hazard_Detector_pchold,
-         CLK        => my_clk,
+         CLK        => filtered_clk,
          PC_OUT     => PC_PC_OUT,
          NEW_PC_OUT => PC_NEW_PC_OUT
          );
 --RA.vhd
      One_RA : RA port map (
-         clk        => my_clk,
+         clk        => filtered_clk,
          RAWrite    => Controller_IDRegs.RAWrite,
          write_data => ID_Registers_out_PC1,
          RA         => RA_RA
@@ -610,7 +617,7 @@ begin
          );
 --EX_M_WB_Registers.vhd
      One_EX_M_WB_Registers : EX_M_WB_Registers port map (
-         clk        => my_clk,
+         clk        => filtered_clk,
          force_nop  => Hazard_Detector_exmwbclear,
          in_EXRegs  => Controller_EXRegs,
          in_MRegs   => Controller_MRegs,
@@ -623,7 +630,7 @@ begin
          );
 --ID_Registers.vhd
      One_ID_Registers : ID_Registers port map (
-         clk       => my_clk,
+         clk       => filtered_clk,
          in_PC1    => PC_NEW_PC_OUT,
          in_INS    => RAM2_Data,
          in_hazard => Hazard_Detector_idhold,
@@ -703,7 +710,7 @@ begin
          );
 --M_WB_Registers.vhd
      One_M_WB_Registers : M_WB_Registers port map (
-         clk        => my_clk,
+         clk        => filtered_clk,
          in_MRegs   => EX_M_WB_Registers_out_MRegs,
          in_WBRegs  => EX_M_WB_Registers_out_WBRegs,
          in_data    => M_WB_Registers_in_data,
@@ -741,7 +748,7 @@ begin
          );
 --WB_Registers.vhd
      One_WB_Registers : WB_Registers port map (
-         clk        => my_clk,
+         clk        => filtered_clk,
          in_WBRegs  => M_WB_Registers_out_WBRegs,
          in_data    => WB_Registers_in_data,
          out_WBRegs => WB_Registers_out_WBRegs,
