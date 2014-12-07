@@ -90,6 +90,13 @@ begin
                         when others =>
                             ram1_en <= '1';
                     end case;
+                    if (clk = '1') then
+                        ram1_en <= '1';
+                        ram1_we <= '1';
+                        ram1_oe <= '1';
+                        com_rdn <= '1';
+                        com_wrn <= '1';
+                    end if;
                 when Send1 =>
                     com_wrn     <= '0';
                     dm_data_out <= cache;
@@ -99,20 +106,19 @@ begin
                     status  <= Send3;
                 when Send3 =>
                     if com_tbre = '1' then
-                        status <= Normal;
+                        status <= Send4;
                     else
                         status <= Send3;
+                    end if;
+                when Send4 =>
+                    if com_tsre = '1' then
+                        status <= Normal;
+                    else
+                        status <= Send4;
                     end if;
                 when others =>
                     status <= Normal;
             end case;
-        end if;
-        if (clk = '1' and status = Normal) then
-            ram1_en <= '1';
-            ram1_we <= '1';
-            ram1_oe <= '1';
-            com_rdn <= '1';
-            com_wrn <= '1';
         end if;
     end process;
 end behavioral;

@@ -442,7 +442,7 @@ begin
      process(clk_50)
      begin
        if (rising_edge(clk_50)) then
-         if counter = 25000000 then
+         if counter = 25 then
            counter <= 0;
            my_clk <= not my_clk;
          else
@@ -452,30 +452,31 @@ begin
      end process;
      process(my_clk, stop_clk)
      begin
-         filtered_clk <= my_clk;
---         if stop_clk = '0' then
---             filtered_clk <= my_clk;
---         end if;
+         if stop_clk = '0' then
+             filtered_clk <= my_clk;
+         end if;
      end process;
      --my_clk <= not click;
      process(sw, stop_clk)
      begin
          if sw = "111" then
                            LED(15) <= stop_clk; 
-                               LED(14 downto 0) <= (others => '1');
                            if status_out = Normal then
                                LED(14 downto 12) <= "000";
                            elsif status_out = Send1 then
-                               LED(14 downto 12) <= "000";
-                           elsif status_out = Send2 then
                                LED(14 downto 12) <= "001";
-                           elsif status_out = Send3 then
+                           elsif status_out = Send2 then
                                LED(14 downto 12) <= "010";
-                           elsif status_out = Send4 then
+                           elsif status_out = Send3 then
                                LED(14 downto 12) <= "011";
+                           elsif status_out = Send4 then
+                               LED(14 downto 12) <= "100";
                            else
                                LED(14 downto 12) <= "111";
                            end if;
+                           LED(11) <= filtered_clk;
+                           LED(10) <= my_clk;
+                               LED(9 downto 0) <= (others => '1');
          else
              LED <= (others => '1');
          end if;
