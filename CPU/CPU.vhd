@@ -437,25 +437,26 @@ architecture arch of CPU is
     signal status_out : StatusType;
 
 begin
-     clk <= my_clk; 
-         --my_clk <= click;
-         process(clk_50)
-         begin
-             if (rising_edge(clk_50)) then
-                 if counter = 25000000 then
-                     counter <= 0;
-                     my_clk  <= not my_clk;
-                 else
-                     counter <= counter + 1;
-                 end if;
-             end if;
-         end process; 
-             process(my_clk, stop_clk)
-             begin
-                  if stop_clk = '0' then
-                      filtered_clk <= my_clk;
-                  end if;
-             end process;
+     clk    <= my_clk;
+	  --my_clk <= click;
+     process(clk_50)
+     begin
+       if (rising_edge(clk_50)) then
+         if counter = 25000000 then
+           counter <= 0;
+           my_clk <= not my_clk;
+         else
+           counter <= counter + 1;
+         end if;
+       end if;
+     end process;
+     process(my_clk, stop_clk)
+     begin
+         filtered_clk <= my_clk;
+--         if stop_clk = '0' then
+--             filtered_clk <= my_clk;
+--         end if;
+     end process;
      --my_clk <= not click;
      process(sw, stop_clk)
      begin
