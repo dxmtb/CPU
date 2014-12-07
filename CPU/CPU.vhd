@@ -93,9 +93,9 @@ architecture arch of CPU is
             com_wrn        : out   std_logic := '1';
             com_tbre       : in    std_logic;
             com_tsre       : in    std_logic;
-        stop_clk        : out std_logic := '0';
-        status_out        : out StatusType
-    );
+            stop_clk       : out   std_logic := '0';
+            status_out     : out   StatusType
+            );
     end component;
 
 --EX_M_WB_Registers.vhd
@@ -429,54 +429,54 @@ architecture arch of CPU is
 
     signal ID_Registers_out_Rx, ID_Registers_out_Ry, ID_Registers_out_Rz : std_logic_vector(2 downto 0);
 
-    signal clk, my_clk, filtered_clk                : std_logic;
+    signal clk, my_clk, filtered_clk  : std_logic;
     signal not_RegisterGroup_regT_out : std_logic;
 
-    signal counter : integer range 0 to 50000000;
-    signal stop_clk : std_logic;
-    signal status_out        : StatusType;
+    signal counter    : integer range 0 to 50000000;
+    signal stop_clk   : std_logic;
+    signal status_out : StatusType;
 
 begin
-     clk    <= my_clk;
-	  --my_clk <= click;
-     process(clk_50)
-     begin
-       if (rising_edge(clk_50)) then
-         if counter = 25000000 then
-           counter <= 0;
-           my_clk <= not my_clk;
-         else
-           counter <= counter + 1;
-         end if;
-       end if;
-     end process;
-     process(my_clk, stop_clk)
-     begin
-         if stop_clk = '0' then
-             filtered_clk <= my_clk;
-         end if;
-     end process;
+     clk <= my_clk; 
+         --my_clk <= click;
+         process(clk_50)
+         begin
+             if (rising_edge(clk_50)) then
+                 if counter = 25000000 then
+                     counter <= 0;
+                     my_clk  <= not my_clk;
+                 else
+                     counter <= counter + 1;
+                 end if;
+             end if;
+         end process; 
+             process(my_clk, stop_clk)
+             begin
+                  if stop_clk = '0' then
+                      filtered_clk <= my_clk;
+                  end if;
+             end process;
      --my_clk <= not click;
      process(sw, stop_clk)
      begin
          if sw = "111" then
-				LED(15) <= stop_clk;
-				LED(14 downto 0) <= (others => '1');
-                if status_out = Normal then
-                    LED(14 downto 12) <= "000";
-                elsif status_out = Send1 then
-                    LED(14 downto 12) <= "000";
-                elsif status_out = Send2 then
-                    LED(14 downto 12) <= "001";
-                elsif status_out = Send3 then
-                    LED(14 downto 12) <= "010";
-                elsif status_out = Send4 then
-                    LED(14 downto 12) <= "011";
-                else
-                    LED(14 downto 12) <= "111";
-                end if;
+                           LED(15) <= stop_clk; 
+                               LED(14 downto 0) <= (others => '1');
+                           if status_out = Normal then
+                               LED(14 downto 12) <= "000";
+                           elsif status_out = Send1 then
+                               LED(14 downto 12) <= "000";
+                           elsif status_out = Send2 then
+                               LED(14 downto 12) <= "001";
+                           elsif status_out = Send3 then
+                               LED(14 downto 12) <= "010";
+                           elsif status_out = Send4 then
+                               LED(14 downto 12) <= "011";
+                           else
+                               LED(14 downto 12) <= "111";
+                           end if;
          else
-            LED <= (others => '1');
+             LED <= (others => '1');
          end if;
      end process;
 
@@ -565,8 +565,8 @@ begin
          com_wrn        => DM_com_wrn,
          com_tbre       => com_tbre,
          com_tsre       => com_tsre,
-         stop_clk => stop_clk,
-         status_out => status_out
+         stop_clk       => stop_clk,
+         status_out     => status_out
          );
 --IM.vhd
      One_IM : IM port map (
