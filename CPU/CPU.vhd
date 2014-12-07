@@ -24,14 +24,14 @@ entity CPU is
         -- com_tbre       : in    std_logic;
         com_tsre       : in    std_logic;
         com_wrn        : out   std_logic;
-        LED            : out   std_logic_vector (15 downto 0);
+        LED            : out   std_logic_vector (15 downto 0)
         --VGA
-        hs             : out   std_logic;
-        vs             : out   std_logic;
-
-        VGA_B : out std_logic_vector(2 downto 0);
-        VGA_G : out std_logic_vector(2 downto 0);
-        VGA_R : out std_logic_vector(2 downto 0)
+--        hs             : out   std_logic;
+--        vs             : out   std_logic;
+--
+--        VGA_B : out std_logic_vector(2 downto 0);
+--        VGA_G : out std_logic_vector(2 downto 0);
+--        VGA_R : out std_logic_vector(2 downto 0)
         );
 end entity;  -- CPU
 
@@ -429,9 +429,22 @@ architecture arch of CPU is
     signal clk, my_clk                : std_logic;
     signal not_RegisterGroup_regT_out : std_logic;
 
+    signal counter : integer range 0 to 50000000;
+
 begin
      clk    <= clk_11;
-     my_clk <= not click;
+     process(clk_50)
+     begin
+       if (rising_edge(clk_50)) then
+         if counter = 250000 then
+           counter <= 0;
+           my_clk <= not my_clk;
+         else
+           counter <= counter + 1;
+         end if;
+       end if;
+     end process;
+     --my_clk <= not click;
      process(sw, Forward_Unit_forwarda, WB_Registers_out_WBRegs, MUX_D_Ret)
      begin
          if sw = "111" then
@@ -497,40 +510,40 @@ begin
      RAM2_OE   <= IM_ram2_oe;
      com_rdn   <= DM_com_rdn;
      com_wrn   <= DM_com_wrn;
---CoreDisplayer.vhd
-     One_CoreDisplayer : CoreDisplayer port map (
-         clk   => clk_50,
-         x_pos => VGADisplayer_x_pos,
-         y_pos => VGADisplayer_y_pos,
-         INS   => RAM2_Data,
-         PC    => PC_PC_OUT,
-         IH    => RegisterGroup_regIH_out,
-         SP    => RegisterGroup_regSP_out,
-         reg0  => RegisterGroup_reg0_out,
-         reg1  => RegisterGroup_reg1_out,
-         reg2  => RegisterGroup_reg2_out,
-         reg3  => RegisterGroup_reg3_out,
-         reg4  => RegisterGroup_reg4_out,
-         reg5  => RegisterGroup_reg5_out,
-         reg6  => RegisterGroup_reg6_out,
-         reg7  => RegisterGroup_reg7_out,
-         T     => RegisterGroup_regT_out,
-         rgb   => CoreDisplayer_rgb
-         );
---VGADisplayer.vhd
-     One_VGADisplayer : VGADisplayer port map (
-         reset  => '1',
-         clk25  => open,
-         rgb    => CoreDisplayer_rgb,
-         clk_50 => clk_50,
-         hs     => hs,
-         vs     => vs,
-         r      => VGA_R,
-         g      => VGA_G,
-         b      => VGA_B,
-         x_pos  => VGADisplayer_x_pos,
-         y_pos  => VGADisplayer_y_pos
-         );
+----CoreDisplayer.vhd
+--     One_CoreDisplayer : CoreDisplayer port map (
+--         clk   => clk_50,
+--         x_pos => VGADisplayer_x_pos,
+--         y_pos => VGADisplayer_y_pos,
+--         INS   => RAM2_Data,
+--         PC    => PC_PC_OUT,
+--         IH    => RegisterGroup_regIH_out,
+--         SP    => RegisterGroup_regSP_out,
+--         reg0  => RegisterGroup_reg0_out,
+--         reg1  => RegisterGroup_reg1_out,
+--         reg2  => RegisterGroup_reg2_out,
+--         reg3  => RegisterGroup_reg3_out,
+--         reg4  => RegisterGroup_reg4_out,
+--         reg5  => RegisterGroup_reg5_out,
+--         reg6  => RegisterGroup_reg6_out,
+--         reg7  => RegisterGroup_reg7_out,
+--         T     => RegisterGroup_regT_out,
+--         rgb   => CoreDisplayer_rgb
+--         );
+----VGADisplayer.vhd
+--     One_VGADisplayer : VGADisplayer port map (
+--         reset  => '1',
+--         clk25  => open,
+--         rgb    => CoreDisplayer_rgb,
+--         clk_50 => clk_50,
+--         hs     => hs,
+--         vs     => vs,
+--         r      => VGA_R,
+--         g      => VGA_G,
+--         b      => VGA_B,
+--         x_pos  => VGADisplayer_x_pos,
+--         y_pos  => VGADisplayer_y_pos
+--         );
 --DM.vhd
      One_DM : DM port map (
          clk            => clk,
