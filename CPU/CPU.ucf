@@ -42,7 +42,7 @@ NET "RAM2_WE" LOC = M9;
 
 NET "com_data_ready" LOC = A16;
 NET "com_rdn" LOC = C14;
-#NET "com_tbre" LOC = D14;
+NET "com_tbre" LOC = D14;
 NET "com_tsre" LOC = N9;
 NET "com_wrn" LOC = U5;
 NET "RAM1_EN" LOC = M15;

@@ -21,7 +21,7 @@ entity CPU is
         RAM2_Data      : inout std_logic_vector (15 downto 0);
         com_data_ready : in    std_logic;
         com_rdn        : out   std_logic;
-        -- com_tbre       : in    std_logic;
+        com_tbre       : in    std_logic;
         com_tsre       : in    std_logic;
         com_wrn        : out   std_logic;
         LED            : out   std_logic_vector (15 downto 0)
@@ -91,7 +91,7 @@ architecture arch of CPU is
             com_data_ready : in    std_logic;
             com_rdn        : out   std_logic := '1';
             com_wrn        : out   std_logic := '1';
-            -- com_tbre       : in    std_logic;
+            com_tbre       : in    std_logic;
             com_tsre       : in    std_logic);
     end component;
 
@@ -558,7 +558,7 @@ begin
          com_data_ready => com_data_ready,
          com_rdn        => DM_com_rdn,
          com_wrn        => DM_com_wrn,
-         -- com_tbre       => com_tbre,
+         com_tbre       => com_tbre,
          com_tsre       => com_tsre
          );
 --IM.vhd

@@ -7,13 +7,13 @@
 
 if __name__ == "__main__":
     content = []
-    for line in open("./kernel_new_board.txt"):
+    for line in open("./test_fib.txt"):
         instru = line.split(";")[0].strip()
         if len(instru) > 0:
             if instru.startswith("BEQZ") or instru.startswith("BNEZ") or instru.startswith("BTEQZ") or instru.startswith("BTNEZ"):
                 for i in xrange(2):
                     content.append("NOP")
             content.append(instru)
-    with open("kernel.txt", "w") as f:
+    with open("test_fib.txt", "w") as f:
         for instru in content:
             print >> f, instru
