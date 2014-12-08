@@ -597,7 +597,7 @@ begin
          y_pos => VGADisplayer_y_pos,
          INS   => RAM2_Data,
          PC    => PC_PC_OUT,
-         IH    => RegisterGroup_regIH_out,
+         IH    => RA_RA,
          SP    => RegisterGroup_regSP_out,
          reg0  => RegisterGroup_reg0_out,
          reg1  => RegisterGroup_reg1_out,
