@@ -14,9 +14,9 @@ entity Ram_Handler is
         ram2_data_out    : inout   std_logic_vector(15 downto 0);
         dm_data_out     :  out std_logic_vector(15 downto 0);
         ram2_addr      : out   std_logic_vector(17 downto 0);
-        ram1_en        : out   std_logic := '1';
-        ram1_we        : out   std_logic := '1';
-        ram1_oe        : out   std_logic := '1';
+        ram1_en        : out   std_logic;
+        ram1_we        : out   std_logic;
+        ram1_oe        : out   std_logic;
         ram2_en        : out   std_logic := '1';
         ram2_we        : out   std_logic := '1';
         ram2_oe        : out   std_logic := '1';
@@ -34,6 +34,9 @@ architecture behavioral of Ram_Handler is
     signal status : StatusType := Normal;
     signal cache  : std_logic_vector(15 downto 0);
 begin
+    ram1_en <= '1';
+    ram1_we <= '1';
+    ram1_oe <= '1';
     status_out <= status;
     stop_clk <= '0' when status = Normal else '1';
     process (im_addr, dm_addr, memop)
@@ -52,6 +55,31 @@ begin
             dm_data_out <= ram1_data_out;
         end if;
     end process;
+
+    process(clk, status)
+    begin
+        if (clk'event and clk = '0') then
+            if (status = Normal and memop /= memop_write) or 
+						(memop = memop_write and (dm_addr = com_status_addr or dm_addr = com_data_addr)) then
+                ram2_en  <= '0';
+                ram2_oe  <= '0';
+                ram2_data_out <= high_resist;
+            else
+                    --write im/dm (ram2)
+                ram2_en  <= '0';
+                ram2_we  <= '0';
+                ram2_data_out <= data_in;
+            end if;
+        end if;
+        if (clk = '1') then
+            if status = Normal then
+                ram2_en <= '1';
+                ram2_oe <= '1';
+                ram2_we <= '1';
+            end if;
+        end if;
+    end process;
+
     process (clk)
     begin
         if (clk'event and clk = '0') then
@@ -59,99 +87,44 @@ begin
                 when Normal =>
                     case memop is
                         when memop_read =>
-                            if (dm_addr = com_status_addr) then
+                            case dm_addr is
+                                when com_status_addr =>
                                 -- visit com status
-                                ram1_en     <= '1';
-                                --ram1_data_out(1) <= com_data_ready;
-                                ram1_data_out(1) <= '1';
-										  ram1_data_out(0) <= com_tsre;
-                                ram2_en  <= '0';
-                                ram2_oe  <= '0';
-                                ram2_data_out <= high_resist;
-                            elsif (dm_addr = com_data_addr) then
-                                -- visit com data
-                                ram1_en  <= '1';
-                                ram1_data_out <= high_resist;
-                                com_rdn <= '1';
-                                com_wrn <= '1';
-                                status <= Read1;
-                                ram2_en  <= '0';
-                                ram2_oe  <= '0';
-                                ram2_data_out <= high_resist;
-                            else
-                                -- visit ram2 im/dm part
-                                ram2_en  <= '0';
-                                ram2_oe  <= '0';
-                                ram2_data_out <= high_resist;
-                            end if;
+                                    ram1_data_out(1) <= com_data_ready;
+                                    ram1_data_out(0) <= com_tsre and com_tbre;
+                                    com_rdn <= '1';
+                                    com_wrn <= '1';
+                                when com_data_addr =>
+                                    -- visit com data
+                                    ram1_data_out <= high_resist;
+                                    com_rdn <= '0';
+                                    com_wrn <= '1';
+                                when others =>
+                                    com_rdn <= '1';
+                                    com_wrn <= '1';
+                            end case;
                         when memop_write =>
-                            if (dm_addr = com_status_addr) then
-                                -- never happen
-                                ram1_en <= '1';
-                            elsif (dm_addr = com_data_addr) then
+                            if (dm_addr = com_data_addr) then
                                 -- visti com data
-                                ram1_en <= '1';
-                                ram1_we <= '1';
-                                ram1_oe <= '1';
                                 com_rdn <= '1';
                                 com_wrn <= '1';
                                 status  <= Send1;
                                 cache   <= data_in;
-                                ram2_en  <= '0';
-                                ram2_oe  <= '0';
-                                ram2_data_out <= high_resist;
-                            else
-                                --write im/dm (ram2)
-                                ram2_en  <= '0';
-                                ram2_we  <= '0';
-                                ram2_data_out <= data_in;
                             end if;
                         when memop_none =>
-                            -- no dm operation, read im (ram2)
-                            ram2_en  <= '0';
-                            ram2_oe  <= '0';
-                            ram2_data_out <= high_resist;
+                            com_rdn <= '1';
+                            com_wrn <= '1';
                     end case;
                 when Send1 =>
+                    com_rdn <= '1';
                     com_wrn  <= '0';
                     ram1_data_out <= cache;
                     status   <= Send2;
-                when Send2 =>
-                    com_wrn  <= '1';
-                    status   <= Send3;
-                when Send3 =>
-                    if com_tbre = '1' then
-                        status <= Send4;
-                    else
-                        status <= Send3;
-                    end if;
-                when Send4 =>
-                    if com_tsre = '1' then
-                        status <= Normal;
-                    else
-                        status <= Send4;
-                    end if;
-                when Read1 =>
-                    com_rdn                  <= '1';
-                    ram1_data_out <= (others => 'Z');
-                    status                <= Read2;
-                when Read2 =>
-                    if com_data_ready = '1' then
-                        com_rdn   <= '0';
-                        status <= Normal;
-                    else
-                        status <= Read1;
-                    end if;
-						  --com_rdn <= '0';
-						  --status <= Normal;
                 when others =>
-                    status   <= Normal;
+                    com_rdn <= '1';
+                    com_wrn <= '1';
+                    status  <= Normal;
             end case;
-        end if;
-        if (clk = '1') then
-            ram2_en <= '1';
-            ram2_oe <= '1';
-            ram2_we <= '1';
         end if;
     end process;
 end behavioral;

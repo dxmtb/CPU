@@ -137,6 +137,6 @@ package common is
     subtype XCoordinate is integer range 0 to 800;
     subtype YCoordinate is integer range 0 to 600;
 
-    type StatusType is (Normal, Send1, Send2, Send3, Send4, Read1, Read2);
+    type StatusType is (Normal, Send1, Send2);
 
 end common;

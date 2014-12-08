@@ -25,14 +25,14 @@ entity CPU is
         com_tbre       : in    std_logic;
         com_tsre       : in    std_logic;
         com_wrn        : out   std_logic;
-        LED            : out   std_logic_vector (15 downto 0);
+        LED            : out   std_logic_vector (15 downto 0)
         --VGA
-        hs             : out   std_logic;
-        vs             : out   std_logic;
-
-        VGA_B : out std_logic_vector(2 downto 0);
-        VGA_G : out std_logic_vector(2 downto 0);
-        VGA_R : out std_logic_vector(2 downto 0)
+--        hs             : out   std_logic;
+--        vs             : out   std_logic;
+--
+--        VGA_B : out std_logic_vector(2 downto 0);
+--        VGA_G : out std_logic_vector(2 downto 0);
+--        VGA_R : out std_logic_vector(2 downto 0)
         );
 end entity;  -- CPU
 
@@ -499,7 +499,7 @@ begin
      process(clk_50)
      begin
        if (rising_edge(clk_50)) then
-         if counter = 10 then
+         if counter = 1 then
            counter <= 0;
            div_clk <= not div_clk;
          else
@@ -526,10 +526,6 @@ begin
                                LED(14 downto 12) <= "001";
                            elsif status_out = Send2 then
                                LED(14 downto 12) <= "010";
-                           elsif status_out = Send3 then
-                               LED(14 downto 12) <= "011";
-                           elsif status_out = Send4 then
-                               LED(14 downto 12) <= "100";
                            else
                                LED(14 downto 12) <= "111";
                            end if;
@@ -591,39 +587,39 @@ begin
      RAM2_WE   <= Ram_Handler_ram2_we;
      RAM2_OE   <= Ram_Handler_ram2_oe;
 --CoreDisplayer.vhd
-     One_CoreDisplayer : CoreDisplayer port map (
-         clk   => clk_50,
-         x_pos => VGADisplayer_x_pos,
-         y_pos => VGADisplayer_y_pos,
-         INS   => RAM2_Data,
-         PC    => PC_PC_OUT,
-         IH    => RA_RA,
-         SP    => RegisterGroup_regSP_out,
-         reg0  => RegisterGroup_reg0_out,
-         reg1  => RegisterGroup_reg1_out,
-         reg2  => RegisterGroup_reg2_out,
-         reg3  => RegisterGroup_reg3_out,
-         reg4  => RegisterGroup_reg4_out,
-         reg5  => RegisterGroup_reg5_out,
-         reg6  => RegisterGroup_reg6_out,
-         reg7  => RegisterGroup_reg7_out,
-         T     => RegisterGroup_regT_out,
-         rgb   => CoreDisplayer_rgb
-         );
---VGADisplayer.vhd
-     One_VGADisplayer : VGADisplayer port map (
-         reset  => '1',
-         clk25  => open,
-         rgb    => CoreDisplayer_rgb,
-         clk_50 => clk_50,
-         hs     => hs,
-         vs     => vs,
-         r      => VGA_R,
-         g      => VGA_G,
-         b      => VGA_B,
-         x_pos  => VGADisplayer_x_pos,
-         y_pos  => VGADisplayer_y_pos
-         );
+--     One_CoreDisplayer : CoreDisplayer port map (
+--         clk   => clk_50,
+--         x_pos => VGADisplayer_x_pos,
+--         y_pos => VGADisplayer_y_pos,
+--         INS   => RAM2_Data,
+--         PC    => PC_PC_OUT,
+--         IH    => RA_RA,
+--         SP    => RegisterGroup_regSP_out,
+--         reg0  => RegisterGroup_reg0_out,
+--         reg1  => RegisterGroup_reg1_out,
+--         reg2  => RegisterGroup_reg2_out,
+--         reg3  => RegisterGroup_reg3_out,
+--         reg4  => RegisterGroup_reg4_out,
+--         reg5  => RegisterGroup_reg5_out,
+--         reg6  => RegisterGroup_reg6_out,
+--         reg7  => RegisterGroup_reg7_out,
+--         T     => RegisterGroup_regT_out,
+--         rgb   => CoreDisplayer_rgb
+--         );
+----VGADisplayer.vhd
+--     One_VGADisplayer : VGADisplayer port map (
+--         reset  => '1',
+--         clk25  => open,
+--         rgb    => CoreDisplayer_rgb,
+--         clk_50 => clk_50,
+--         hs     => hs,
+--         vs     => vs,
+--         r      => VGA_R,
+--         g      => VGA_G,
+--         b      => VGA_B,
+--         x_pos  => VGADisplayer_x_pos,
+--         y_pos  => VGADisplayer_y_pos
+--         );
 --DM.vhd
 --     One_DM : DM port map (
 --         clk            => clk,
