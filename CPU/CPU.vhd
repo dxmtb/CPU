@@ -477,33 +477,34 @@ signal Ram_Handler_ram2_oe : std_logic := '1';
     signal status_out : StatusType;
 	 signal clk_before : std_logic := '1';
      signal use_click : std_logic;
+     signal clk_click, div_clk : std_logic;
 
 begin
     RAM1_Addr <= (others => '0');
      clk    <= my_clk;
---	 my_clk <= not click;
+     my_clk <= div_clk;
      process(clk_50)
      begin
        if (rising_edge(clk_50)) then
---         if use_click = '1' then
---			clk_before <= clk_before or click;
---			if counter2 /= 50000 then
---				counter2 <= counter2 + 1;
---			else
---				counter2 <= 0;
---				my_clk <= clk_before;
---				clk_before <= '0';
---			end if;
---        else
+			clk_before <= clk_before or click;
+			if counter2 /= 50000 then
+				counter2 <= counter2 + 1;
+			else
+				counter2 <= 0;
+				clk_click <= clk_before;
+				clk_before <= '0';
+			end if;
+        end if;
+    end process;
+     process(clk_50)
+     begin
+       if (rising_edge(clk_50)) then
          if counter = 10 then
            counter <= 0;
---           if click = '0' then
-           my_clk <= not my_clk;
---           end if;
+           div_clk <= not div_clk;
          else
            counter <= counter + 1;
          end if;
-        --end if;
        end if;
      end process;
      process(my_clk, stop_clk)

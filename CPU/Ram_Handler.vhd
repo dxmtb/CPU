@@ -70,8 +70,9 @@ begin
                             elsif (dm_addr = com_data_addr) then
                                 -- visit com data
                                 ram1_en  <= '1';
-                                com_rdn  <= '0';
                                 ram1_data_out <= high_resist;
+                                com_rdn <= '1';
+                                com_wrn <= '1';
                                 status <= Read1;
                                 ram2_en  <= '0';
                                 ram2_oe  <= '0';
@@ -134,12 +135,14 @@ begin
                     ram1_data_out(7 downto 0)  <= (others => 'Z');
                     status                <= Read2;
                 when Read2 =>
-                    if com_data_ready = '1' then
-                        com_rdn   <= '0';
-                        status <= Normal;
-                    else
-                        status <= Read1;
-                    end if;
+                    --if com_data_ready = '1' then
+                    --    com_rdn   <= '0';
+                    --    status <= Normal;
+                    --else
+                    --    status <= Read1;
+                    --end if;
+						  com_rdn <= '0';
+						  status <= Normal;
                 when others =>
                     status   <= Normal;
             end case;
