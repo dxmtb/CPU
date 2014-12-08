@@ -62,8 +62,9 @@ begin
                             if (dm_addr = com_status_addr) then
                                 -- visit com status
                                 ram1_en     <= '1';
-                                ram1_data_out(1) <= com_data_ready;
-                                ram1_data_out(0) <= com_tsre;
+                                --ram1_data_out(1) <= com_data_ready;
+                                ram1_data_out(1) <= '1';
+										  ram1_data_out(0) <= com_tsre;
                                 ram2_en  <= '0';
                                 ram2_oe  <= '0';
                                 ram2_data_out <= high_resist;
@@ -132,17 +133,17 @@ begin
                     end if;
                 when Read1 =>
                     com_rdn                  <= '1';
-                    ram1_data_out(7 downto 0)  <= (others => 'Z');
+                    ram1_data_out <= (others => 'Z');
                     status                <= Read2;
                 when Read2 =>
-                    --if com_data_ready = '1' then
-                    --    com_rdn   <= '0';
-                    --    status <= Normal;
-                    --else
-                    --    status <= Read1;
-                    --end if;
-						  com_rdn <= '0';
-						  status <= Normal;
+                    if com_data_ready = '1' then
+                        com_rdn   <= '0';
+                        status <= Normal;
+                    else
+                        status <= Read1;
+                    end if;
+						  --com_rdn <= '0';
+						  --status <= Normal;
                 when others =>
                     status   <= Normal;
             end case;
