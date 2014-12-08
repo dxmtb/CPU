@@ -71,7 +71,8 @@ architecture arch of CPU is
             IDRegs : out IDRegsType;
             EXRegs : out EXRegsType;
             MRegs  : out MRegsType;
-            WBRegs : out WBRegsType
+            WBRegs : out WBRegsType;
+        use_click : out std_logic := '0'
             ) ;
     end component;  -- Controller
 
@@ -473,6 +474,7 @@ signal Ram_Handler_ram2_oe : std_logic := '1';
     signal stop_clk   : std_logic;
     signal status_out : StatusType;
 	 signal clk_before : std_logic := '1';
+     signal use_click : std_logic;
 
 begin
     RAM1_Addr <= (others => '0');
@@ -481,6 +483,7 @@ begin
      process(clk_50, click)
      begin
        if (rising_edge(clk_50)) then
+         if use_click = '1' then
 			clk_before <= clk_before or click;
 			if counter /= 50000 then
 				counter <= counter + 1;
@@ -489,21 +492,18 @@ begin
 				my_clk <= clk_before;
 				clk_before <= '0';
 			end if;
+        else
+        end if;
+         if counter = 1 then
+           counter <= 0;
+--           if click = '0' then
+           my_clk <= not my_clk;
+--           end if;
+         else
+           counter <= counter + 1;
+         end if;
        end if;
      end process;
---     process(clk_50, click)
---     begin
---       if (rising_edge(clk_50)) then
---         if counter = 1 then
---           counter <= 0;
-----           if click = '0' then
---           my_clk <= not my_clk;
-----           end if;
---         else
---           counter <= counter + 1;
---         end if;
---       end if;
---     end process;
      process(my_clk, stop_clk)
      begin
          if stop_clk = '0' then
@@ -685,7 +685,8 @@ begin
          IDRegs => Controller_IDRegs,
          EXRegs => Controller_EXRegs,
          MRegs  => Controller_MRegs,
-         WBRegs => Controller_WBRegs
+         WBRegs => Controller_WBRegs,
+        use_click => use_click
          );
 --EX_M_WB_Registers.vhd
      One_EX_M_WB_Registers : EX_M_WB_Registers port map (

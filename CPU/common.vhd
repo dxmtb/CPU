@@ -74,6 +74,8 @@ package common is
 
     constant INST_CODE_NOP : std_logic_vector(4 downto 0) := "00001";
 
+    constant INST_CODE_INT : std_logic_vector(4 downto 0) := "11111";
+
     constant INST_CODE_B : std_logic_vector(4 downto 0) := "00010";
 
     constant INST_CODE_BEQZ : std_logic_vector(4 downto 0) := "00100";

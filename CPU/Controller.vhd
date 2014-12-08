@@ -9,7 +9,8 @@ entity Controller is
         IDRegs : out IDRegsType;
         EXRegs : out EXRegsType;
         MRegs  : out MRegsType;
-        WBRegs : out WBRegsType
+        WBRegs : out WBRegsType;
+        use_click : out std_logic := '0'
         ) ;
 end entity;  -- Controller
 
@@ -49,6 +50,9 @@ begin
         RetWBRegs.WBSrc    := WBSrc_ALURes;
 
         case ins_op is
+            when INST_CODE_INT =>
+            -- For debug
+                use_click <= '1';
             when INST_CODE_ADDIU =>
                 RetIDRegs.ImmExt   := ImmExt_Sign_7;
                 RetEXRegs.Op1Src   := Op1Src_Rx;
