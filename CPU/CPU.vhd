@@ -499,7 +499,7 @@ begin
      process(clk_50)
      begin
        if (rising_edge(clk_50)) then
-         if counter = 5 then
+         if counter = 1 then
            counter <= 0;
            div_clk <= not div_clk;
          else
@@ -526,10 +526,6 @@ begin
                                LED(14 downto 12) <= "001";
                            elsif status_out = Send2 then
                                LED(14 downto 12) <= "010";
-                           elsif status_out = Send3 then
-                               LED(14 downto 12) <= "011";
-                           elsif status_out = Send4 then
-                               LED(14 downto 12) <= "100";
                            else
                                LED(14 downto 12) <= "111";
                            end if;
