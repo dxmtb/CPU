@@ -147,6 +147,7 @@ architecture arch of CPU is
         port (
             wbenable   : in  WBEnableType;
             memop      : in  MemOpType;
+            memop2      : in  MemOpType;
             idrx       : in  std_logic_vector(2 downto 0);
             idry       : in  std_logic_vector(2 downto 0);
             wbregister : in  std_logic_vector(3 downto 0);
@@ -471,24 +472,38 @@ signal Ram_Handler_ram2_oe : std_logic := '1';
     signal counter    : integer range 0 to 50000000;
     signal stop_clk   : std_logic;
     signal status_out : StatusType;
+	 signal clk_before : std_logic := '1';
 
 begin
     RAM1_Addr <= (others => '0');
      clk    <= my_clk;
 --	 my_clk <= not click;
-     process(clk_50)
+     process(clk_50, click)
      begin
        if (rising_edge(clk_50)) then
-         if counter = 10000000 then
-           counter <= 0;
-           if click = '0' then
-               my_clk <= not my_clk;
-           end if;
-         else
-           counter <= counter + 1;
-         end if;
+			clk_before <= clk_before or click;
+			if counter /= 50000 then
+				counter <= counter + 1;
+			else
+				counter <= 0;
+				my_clk <= clk_before;
+				clk_before <= '0';
+			end if;
        end if;
      end process;
+--     process(clk_50, click)
+--     begin
+--       if (rising_edge(clk_50)) then
+--         if counter = 1 then
+--           counter <= 0;
+----           if click = '0' then
+--           my_clk <= not my_clk;
+----           end if;
+--         else
+--           counter <= counter + 1;
+--         end if;
+--       end if;
+--     end process;
      process(my_clk, stop_clk)
      begin
          if stop_clk = '0' then
@@ -653,6 +668,7 @@ begin
      One_Hazard_Detector : Hazard_Detector port map (
          wbenable   => EX_M_WB_Registers_out_WBRegs.WBEnable,
          memop      => EX_M_WB_Registers_out_MRegs.MemOp,
+         memop2      => M_WB_Registers_out_MRegs.MemOp,
          idrx       => ID_Registers_out_Rx,
          idry       => ID_Registers_out_Ry,
          wbregister => MUX_C_Ret,

@@ -38,7 +38,7 @@ begin
     stop_clk <= '0' when status = Normal else '1';
     process (im_addr, dm_addr, memop)
     begin
-        if (memop = memop_none) then
+        if (memop = memop_none or (dm_addr = com_data_addr or dm_addr = com_status_addr)) then
             ram2_addr <= "00" & im_addr;
         else
             ram2_addr <= "00" & dm_addr;
@@ -64,11 +64,17 @@ begin
                                 ram1_en     <= '1';
                                 ram1_data_out(1) <= com_data_ready;
                                 ram1_data_out(0) <= com_tsre;
+                                ram2_en  <= '0';
+                                ram2_oe  <= '0';
+                                ram2_data_out <= high_resist;
                             elsif (dm_addr = com_data_addr) then
                                 -- visit com data
                                 ram1_en  <= '1';
                                 com_rdn  <= '0';
                                 ram1_data_out <= high_resist;
+                                ram2_en  <= '0';
+                                ram2_oe  <= '0';
+                                ram2_data_out <= high_resist;
                             else
                                 -- visit ram2 im/dm part
                                 ram2_en  <= '0';
@@ -88,6 +94,9 @@ begin
                                 com_wrn <= '1';
                                 status  <= Send1;
                                 cache   <= data_in;
+                                ram2_en  <= '0';
+                                ram2_oe  <= '0';
+                                ram2_data_out <= high_resist;
                             else
                                 --write im/dm (ram2)
                                 ram2_en  <= '0';
