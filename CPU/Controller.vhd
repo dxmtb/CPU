@@ -4,6 +4,7 @@ use work.common.all;
 
 entity Controller is
     port (
+			reset : in std_logic;
         INS    : in  std_logic_vector(15 downto 0);
         IFRegs : out IFRegsType;
         IDRegs : out IDRegsType;
@@ -28,13 +29,16 @@ begin
     ins_func_1   <= INS(1 downto 0);
     ins_func_4   <= INS(4 downto 0);
     ins_func_7_5 <= INS(7 downto 5);
-    process (INS, ins_op, ins_10_8, ins_func_1, ins_func_4, ins_func_7_5)
+    process (reset, INS, ins_op, ins_10_8, ins_func_1, ins_func_4, ins_func_7_5)
         variable RetIFRegs : IFRegsType;
         variable RetIDRegs : IDRegsType;
         variable RetEXRegs : EXRegsType;
         variable RetMRegs  : MRegsType;
         variable RetWBRegs : WBRegsType;
     begin
+			if (reset = '1') then
+				use_click <= '0';
+			end if;
         -- NOP by default
         RetIFRegs.PCSrc    := PCSrc_PC1;
         RetIDRegs.RAWrite  := RAWrite_No;

@@ -6,6 +6,7 @@ use work.common.all;
 entity CPU is
     port (
         click          : in    std_logic;
+		  reset				: in std_logic;
         clk_50         : in    std_logic;
         clk_11         : in    std_logic;
         sw             : in    std_logic_vector(2 downto 0);
@@ -66,6 +67,7 @@ architecture arch of CPU is
 --Controller.vhd
     component Controller is
         port (
+				reset : in std_logic;
             INS    : in  std_logic_vector(15 downto 0);
             IFRegs : out IFRegsType;
             IDRegs : out IDRegsType;
@@ -470,7 +472,7 @@ signal Ram_Handler_ram2_oe : std_logic := '1';
     signal clk, my_clk, filtered_clk  : std_logic;
     signal not_RegisterGroup_regT_out : std_logic;
 
-    signal counter    : integer range 0 to 50000000;
+    signal counter, counter2    : integer range 0 to 50000000;
     signal stop_clk   : std_logic;
     signal status_out : StatusType;
 	 signal clk_before : std_logic := '1';
@@ -480,21 +482,20 @@ begin
     RAM1_Addr <= (others => '0');
      clk    <= my_clk;
 --	 my_clk <= not click;
-     process(clk_50, click)
+     process(clk_50)
      begin
        if (rising_edge(clk_50)) then
-         if use_click = '1' then
-			clk_before <= clk_before or click;
-			if counter /= 50000 then
-				counter <= counter + 1;
-			else
-				counter <= 0;
-				my_clk <= clk_before;
-				clk_before <= '0';
-			end if;
-        else
-        end if;
-         if counter = 1 then
+--         if use_click = '1' then
+--			clk_before <= clk_before or click;
+--			if counter2 /= 50000 then
+--				counter2 <= counter2 + 1;
+--			else
+--				counter2 <= 0;
+--				my_clk <= clk_before;
+--				clk_before <= '0';
+--			end if;
+--        else
+         if counter = 10 then
            counter <= 0;
 --           if click = '0' then
            my_clk <= not my_clk;
@@ -502,6 +503,7 @@ begin
          else
            counter <= counter + 1;
          end if;
+        --end if;
        end if;
      end process;
      process(my_clk, stop_clk)
@@ -514,6 +516,8 @@ begin
      process(sw, stop_clk, filtered_clk, my_clk, status_out)
      begin
          if sw = "111" then
+			                           LED(9 downto 0) <= (others => '1');
+
                            LED(15) <= stop_clk; 
                            if status_out = Normal then
                                LED(14 downto 12) <= "000";
@@ -530,7 +534,7 @@ begin
                            end if;
                            LED(11)         <= filtered_clk;
                            LED(10)         <= my_clk;
-                           LED(9 downto 0) <= (others => '1');
+									LED(9) <= use_click;
          elsif sw = "101" then
            LED(15 downto 0) <= (others => '1');
            if EX_M_WB_Registers_out_MRegs.MemOp = MemOp_None then
@@ -680,6 +684,7 @@ begin
 
 --Controller.vhd
      One_Controller : Controller port map (
+			reset => reset,
          INS    => ID_Registers_out_INS,
          IFRegs => Controller_IFRegs,
          IDRegs => Controller_IDRegs,

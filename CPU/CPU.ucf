@@ -1,6 +1,8 @@
 NET "CLICK" LOC = U9;
 NET "CLK_50" LOC = B9;
 NET "CLK_11" LOC = B8;
+NET "RESET" LOC = U10;
+
 
 NET "RAM2_Addr[17]" LOC = U15;
 NET "RAM2_Addr[16]" LOC = U16;

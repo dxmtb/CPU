@@ -20,7 +20,7 @@ end Hazard_Detector;
 
 architecture behavioral of Hazard_Detector is
 begin
-    process(wbenable, memop, idrx, idry, wbregister, MemAddr)
+    process(wbenable, memop, idrx, idry, wbregister, MemAddr, memop2)
     begin
         if ((wbenable = WBEnable_Yes and memop = MemOp_read and (idrx = wbregister(2 downto 0) 
                 or idry = wbregister(2 downto 0))) 

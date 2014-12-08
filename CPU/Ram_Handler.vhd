@@ -72,6 +72,7 @@ begin
                                 ram1_en  <= '1';
                                 com_rdn  <= '0';
                                 ram1_data_out <= high_resist;
+                                status <= Read1;
                                 ram2_en  <= '0';
                                 ram2_oe  <= '0';
                                 ram2_data_out <= high_resist;
@@ -127,6 +128,17 @@ begin
                         status <= Normal;
                     else
                         status <= Send4;
+                    end if;
+                when Read1 =>
+                    com_rdn                  <= '1';
+                    ram1_data_out(7 downto 0)  <= (others => 'Z');
+                    status                <= Read2;
+                when Read2 =>
+                    if com_data_ready = '1' then
+                        com_rdn   <= '0';
+                        status <= Normal;
+                    else
+                        status <= Read1;
                     end if;
                 when others =>
                     status   <= Normal;
