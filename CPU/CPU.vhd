@@ -6,7 +6,7 @@ use work.common.all;
 entity CPU is
     port (
         click          : in    std_logic;
-		  reset				: in std_logic;
+        reset          : in    std_logic;
         clk_50         : in    std_logic;
         clk_11         : in    std_logic;
         sw             : in    std_logic_vector(2 downto 0);
@@ -67,14 +67,14 @@ architecture arch of CPU is
 --Controller.vhd
     component Controller is
         port (
-				reset : in std_logic;
-            INS    : in  std_logic_vector(15 downto 0);
-            IFRegs : out IFRegsType;
-            IDRegs : out IDRegsType;
-            EXRegs : out EXRegsType;
-            MRegs  : out MRegsType;
-            WBRegs : out WBRegsType;
-        use_click : out std_logic := '0'
+            reset     : in  std_logic;
+            INS       : in  std_logic_vector(15 downto 0);
+            IFRegs    : out IFRegsType;
+            IDRegs    : out IDRegsType;
+            EXRegs    : out EXRegsType;
+            MRegs     : out MRegsType;
+            WBRegs    : out WBRegsType;
+            use_click : out std_logic := '0'
             ) ;
     end component;  -- Controller
 
@@ -150,7 +150,7 @@ architecture arch of CPU is
         port (
             wbenable   : in  WBEnableType;
             memop      : in  MemOpType;
-            memop2      : in  MemOpType;
+            memop2     : in  MemOpType;
             idrx       : in  std_logic_vector(2 downto 0);
             idry       : in  std_logic_vector(2 downto 0);
             wbregister : in  std_logic_vector(3 downto 0);
@@ -174,32 +174,32 @@ architecture arch of CPU is
     end component;
 
 --Ram_Handler.vhd
-component Ram_Handler is
-    port (
-        clk            : in    std_logic;
-        memop          : in    MemOpType;
-        dm_addr        : in    std_logic_vector(15 downto 0);
-        im_addr        : in    std_logic_vector(15 downto 0);
-        data_in        : in    std_logic_vector(15 downto 0);
-        ram1_data_out    : inout   std_logic_vector(15 downto 0);
-        ram2_data_out    : inout   std_logic_vector(15 downto 0);
-        dm_data_out     :  out std_logic_vector(15 downto 0);
-        ram2_addr      : out   std_logic_vector(17 downto 0);
-        ram1_en        : out   std_logic := '1';
-        ram1_we        : out   std_logic := '1';
-        ram1_oe        : out   std_logic := '1';
-        ram2_en        : out   std_logic := '1';
-        ram2_we        : out   std_logic := '1';
-        ram2_oe        : out   std_logic := '1';
-        com_data_ready : in    std_logic;
-        com_rdn        : out   std_logic := '1';
-        com_wrn        : out   std_logic := '1';
-        com_tbre       : in    std_logic;
-        com_tsre       : in    std_logic;
-        stop_clk       : out   std_logic := '0';
-        status_out     : out   StatusType
-        );
-end component;
+    component Ram_Handler is
+        port (
+            clk            : in    std_logic;
+            memop          : in    MemOpType;
+            dm_addr        : in    std_logic_vector(15 downto 0);
+            im_addr        : in    std_logic_vector(15 downto 0);
+            data_in        : in    std_logic_vector(15 downto 0);
+            ram1_data_out  : inout std_logic_vector(15 downto 0);
+            ram2_data_out  : inout std_logic_vector(15 downto 0);
+            dm_data_out    : out   std_logic_vector(15 downto 0);
+            ram2_addr      : out   std_logic_vector(17 downto 0);
+            ram1_en        : out   std_logic := '1';
+            ram1_we        : out   std_logic := '1';
+            ram1_oe        : out   std_logic := '1';
+            ram2_en        : out   std_logic := '1';
+            ram2_we        : out   std_logic := '1';
+            ram2_oe        : out   std_logic := '1';
+            com_data_ready : in    std_logic;
+            com_rdn        : out   std_logic := '1';
+            com_wrn        : out   std_logic := '1';
+            com_tbre       : in    std_logic;
+            com_tsre       : in    std_logic;
+            stop_clk       : out   std_logic := '0';
+            status_out     : out   StatusType
+            );
+    end component;
 
 ----IM.vhd
 --    component IM is
@@ -454,14 +454,14 @@ end component;
     signal CoreDisplayer_rgb            : std_logic;
     signal VGADisplayer_x_pos           : XCoordinate;
     signal VGADisplayer_y_pos           : YCoordinate;
-signal Ram_Handler_dm_data_out : std_logic_vector(15 downto 0);
-signal Ram_Handler_ram2_addr : std_logic_vector(17 downto 0);
-signal Ram_Handler_ram1_en : std_logic := '1';
-signal Ram_Handler_ram1_we : std_logic := '1';
-signal Ram_Handler_ram1_oe : std_logic := '1';
-signal Ram_Handler_ram2_en : std_logic := '1';
-signal Ram_Handler_ram2_we : std_logic := '1';
-signal Ram_Handler_ram2_oe : std_logic := '1';
+    signal Ram_Handler_dm_data_out      : std_logic_vector(15 downto 0);
+    signal Ram_Handler_ram2_addr        : std_logic_vector(17 downto 0);
+    signal Ram_Handler_ram1_en          : std_logic := '1';
+    signal Ram_Handler_ram1_we          : std_logic := '1';
+    signal Ram_Handler_ram1_oe          : std_logic := '1';
+    signal Ram_Handler_ram2_en          : std_logic := '1';
+    signal Ram_Handler_ram2_we          : std_logic := '1';
+    signal Ram_Handler_ram2_oe          : std_logic := '1';
 
     signal EX_M_WB_Registers_in_data : EX_M_WB_Data;
     signal M_WB_Registers_in_data    : M_WB_Data;
@@ -472,154 +472,154 @@ signal Ram_Handler_ram2_oe : std_logic := '1';
     signal clk, my_clk, filtered_clk  : std_logic;
     signal not_RegisterGroup_regT_out : std_logic;
 
-    signal counter, counter2    : integer range 0 to 50000000;
-    signal stop_clk   : std_logic;
-    signal status_out : StatusType;
-	 signal clk_before : std_logic := '1';
-     signal use_click : std_logic;
-     signal clk_click, div_clk : std_logic;
+    signal counter, counter2  : integer range 0 to 50000000;
+    signal stop_clk           : std_logic;
+    signal status_out         : StatusType;
+    signal clk_before         : std_logic := '1';
+    signal use_click          : std_logic;
+    signal clk_click, div_clk : std_logic;
 
 begin
     RAM1_Addr <= (others => '0');
-     clk    <= my_clk;
-     my_clk <= clk_click;
-     process(clk_50)
-     begin
-       if (rising_edge(clk_50)) then
-			clk_before <= clk_before or click;
-			if counter2 /= 50000 then
-				counter2 <= counter2 + 1;
-			else
-				counter2 <= 0;
-				clk_click <= clk_before;
-				clk_before <= '0';
-			end if;
+    clk       <= my_clk;
+    my_clk    <= clk_click;
+    process(clk_50)
+    begin
+        if (rising_edge(clk_50)) then
+            clk_before <= clk_before or click;
+            if counter2 /= 50000 then
+                counter2 <= counter2 + 1;
+            else
+                counter2   <= 0;
+                clk_click  <= clk_before;
+                clk_before <= '0';
+            end if;
         end if;
     end process;
-     process(clk_50)
-     begin
-       if (rising_edge(clk_50)) then
-        -- if counter = 1 then
-         --  counter <= 0;
-           div_clk <= not div_clk;
-        -- else
-        --   counter <= counter + 1;
-        -- end if;
-       end if;
-     end process;
-     process(my_clk, stop_clk)
-     begin
-         if stop_clk = '0' then
-             filtered_clk <= my_clk;
-         end if;
-     end process;
-     --my_clk <= not click;
-     process(sw, stop_clk, filtered_clk, my_clk, status_out)
-     begin
-         if sw = "111" then
-			                           LED(9 downto 0) <= (others => '1');
+    process(clk_50)
+    begin
+        if (rising_edge(clk_50)) then
+            -- if counter = 1 then
+            --  counter <= 0;
+            div_clk <= not div_clk;
+            -- else
+            --   counter <= counter + 1;
+            -- end if;
+        end if;
+    end process;
+    process(my_clk, stop_clk)
+    begin
+        if stop_clk = '0' then
+            filtered_clk <= my_clk;
+        end if;
+    end process;
+    --my_clk <= not click;
+    process(sw, stop_clk, filtered_clk, my_clk, status_out)
+    begin
+        if sw = "111" then
+            LED(9 downto 0) <= (others => '1');
 
-                           LED(15) <= stop_clk; 
-                           if status_out = Normal then
-                               LED(14 downto 12) <= "000";
-                           elsif status_out = Send1 then
-                               LED(14 downto 12) <= "001";
-                           elsif status_out = Send2 then
-                               LED(14 downto 12) <= "010";
-                           else
-                               LED(14 downto 12) <= "111";
-                           end if;
-                           LED(11)         <= filtered_clk;
-                           LED(10)         <= my_clk;
-									LED(9) <= use_click;
-         elsif sw = "101" then
-           LED(15 downto 0) <= (others => '1');
-           if EX_M_WB_Registers_out_MRegs.MemOp = MemOp_None then
-               LED(13) <= '0';
-           end if;
-           LED(12) <= Hazard_Detector_pchold;
-           LED(11)         <= filtered_clk;
-           LED(10)         <= my_clk;
-         elsif sw = "000" then
-           LED(15 downto 0) <= (others => '1');
-           if (WB_Registers_out_WBRegs.WBEnable = WBEnable_Yes) then
-               LED(15) <= '1';
-           end if;
-           if (WB_Registers_out_WBRegs.WBSrc = WBSrc_ALURes) then
-               LED(14) <= '1';
-           end if;
-           LED(13 downto 10) <= WB_Registers_out_data.WBDst;
-         else
-             LED <= (others => '1');
-         end if;
-     end process;
+            LED(15) <= stop_clk;
+            if status_out = Normal then
+                LED(14 downto 12) <= "000";
+            elsif status_out = Send1 then
+                LED(14 downto 12) <= "001";
+            elsif status_out = Send2 then
+                LED(14 downto 12) <= "010";
+            else
+                LED(14 downto 12) <= "111";
+            end if;
+            LED(11) <= filtered_clk;
+            LED(10) <= my_clk;
+            LED(9)  <= use_click;
+        elsif sw = "101" then
+            LED(15 downto 0) <= (others => '1');
+            if EX_M_WB_Registers_out_MRegs.MemOp = MemOp_None then
+                LED(13) <= '0';
+            end if;
+            LED(12) <= Hazard_Detector_pchold;
+            LED(11) <= filtered_clk;
+            LED(10) <= my_clk;
+        elsif sw = "000" then
+            LED(15 downto 0) <= (others => '1');
+            if (WB_Registers_out_WBRegs.WBEnable = WBEnable_Yes) then
+                LED(15) <= '1';
+            end if;
+            if (WB_Registers_out_WBRegs.WBSrc = WBSrc_ALURes) then
+                LED(14) <= '1';
+            end if;
+            LED(13 downto 10) <= WB_Registers_out_data.WBDst;
+        else
+            LED <= (others => '1');
+        end if;
+    end process;
 
-     ID_Registers_out_Rx <= ID_Registers_out_INS(10 downto 8);
-     ID_Registers_out_Ry <= ID_Registers_out_INS(7 downto 5);
-     ID_Registers_out_Rz <= ID_Registers_out_INS(4 downto 2);
+    ID_Registers_out_Rx <= ID_Registers_out_INS(10 downto 8);
+    ID_Registers_out_Ry <= ID_Registers_out_INS(7 downto 5);
+    ID_Registers_out_Rz <= ID_Registers_out_INS(4 downto 2);
 
-     EX_M_WB_Registers_in_data.PC1   <= ID_Registers_out_PC1;
-     EX_M_WB_Registers_in_data.SP    <= RegisterGroup_regSP_out;
-     EX_M_WB_Registers_in_data.IH    <= RegisterGroup_regIH_out;
-     EX_M_WB_Registers_in_data.T     <= RegisterGroup_regT_out;
-     EX_M_WB_Registers_in_data.Rx    <= RegisterGroup_reg1_data;
-     EX_M_WB_Registers_in_data.Ry    <= RegisterGroup_reg2_data;
-     EX_M_WB_Registers_in_data.Imm   <= SignExtend_imm_out;
-     EX_M_WB_Registers_in_data.Rx_WB <= ID_Registers_out_Rx;
-     EX_M_WB_Registers_in_data.Ry_WB <= ID_Registers_out_Ry;
-     EX_M_WB_Registers_in_data.Rz_WB <= ID_Registers_out_Rz;
+    EX_M_WB_Registers_in_data.PC1   <= ID_Registers_out_PC1;
+    EX_M_WB_Registers_in_data.SP    <= RegisterGroup_regSP_out;
+    EX_M_WB_Registers_in_data.IH    <= RegisterGroup_regIH_out;
+    EX_M_WB_Registers_in_data.T     <= RegisterGroup_regT_out;
+    EX_M_WB_Registers_in_data.Rx    <= RegisterGroup_reg1_data;
+    EX_M_WB_Registers_in_data.Ry    <= RegisterGroup_reg2_data;
+    EX_M_WB_Registers_in_data.Imm   <= SignExtend_imm_out;
+    EX_M_WB_Registers_in_data.Rx_WB <= ID_Registers_out_Rx;
+    EX_M_WB_Registers_in_data.Ry_WB <= ID_Registers_out_Ry;
+    EX_M_WB_Registers_in_data.Rz_WB <= ID_Registers_out_Rz;
 
-     M_WB_Registers_in_data.ALURes  <= alu_ALURes;
-     M_WB_Registers_in_data.MemData <= MUX_E_Ret;
-     M_WB_Registers_in_data.WBDst   <= MUX_C_Ret;
+    M_WB_Registers_in_data.ALURes  <= alu_ALURes;
+    M_WB_Registers_in_data.MemData <= MUX_E_Ret;
+    M_WB_Registers_in_data.WBDst   <= MUX_C_Ret;
 
-     WB_Registers_in_data.ALURes  <= M_WB_Registers_out_data.ALURes;
-     WB_Registers_in_data.MemData <= Ram_Handler_dm_data_out;
-     WB_Registers_in_data.WBDst   <= M_WB_Registers_out_data.WBDst;
+    WB_Registers_in_data.ALURes  <= M_WB_Registers_out_data.ALURes;
+    WB_Registers_in_data.MemData <= Ram_Handler_dm_data_out;
+    WB_Registers_in_data.WBDst   <= M_WB_Registers_out_data.WBDst;
 
-     not_RegisterGroup_regT_out <= not RegisterGroup_regT_out;
+    not_RegisterGroup_regT_out <= not RegisterGroup_regT_out;
 
-     RAM1_EN   <= Ram_Handler_ram1_en;
-     RAM1_WE   <= Ram_Handler_ram1_we;
-     RAM1_OE   <= Ram_Handler_ram1_oe;
-     RAM2_Addr <= Ram_Handler_ram2_addr;
-     RAM2_EN   <= Ram_Handler_ram2_en;
-     RAM2_WE   <= Ram_Handler_ram2_we;
-     RAM2_OE   <= Ram_Handler_ram2_oe;
+    RAM1_EN   <= Ram_Handler_ram1_en;
+    RAM1_WE   <= Ram_Handler_ram1_we;
+    RAM1_OE   <= Ram_Handler_ram1_oe;
+    RAM2_Addr <= Ram_Handler_ram2_addr;
+    RAM2_EN   <= Ram_Handler_ram2_en;
+    RAM2_WE   <= Ram_Handler_ram2_we;
+    RAM2_OE   <= Ram_Handler_ram2_oe;
 --CoreDisplayer.vhd
-     One_CoreDisplayer : CoreDisplayer port map (
-         clk   => clk_50,
-         x_pos => VGADisplayer_x_pos,
-         y_pos => VGADisplayer_y_pos,
-         INS   => RAM2_Data,
-         PC    => PC_PC_OUT,
-         IH    => RA_RA,
-         SP    => RegisterGroup_regSP_out,
-         reg0  => RegisterGroup_reg0_out,
-         reg1  => RegisterGroup_reg1_out,
-         reg2  => RegisterGroup_reg2_out,
-         reg3  => RegisterGroup_reg3_out,
-         reg4  => RegisterGroup_reg4_out,
-         reg5  => RegisterGroup_reg5_out,
-         reg6  => RegisterGroup_reg6_out,
-         reg7  => RegisterGroup_reg7_out,
-         T     => RegisterGroup_regT_out,
-         rgb   => CoreDisplayer_rgb
-         );
+    One_CoreDisplayer : CoreDisplayer port map (
+        clk   => clk_50,
+        x_pos => VGADisplayer_x_pos,
+        y_pos => VGADisplayer_y_pos,
+        INS   => RAM2_Data,
+        PC    => PC_PC_OUT,
+        IH    => RA_RA,
+        SP    => RegisterGroup_regSP_out,
+        reg0  => RegisterGroup_reg0_out,
+        reg1  => RegisterGroup_reg1_out,
+        reg2  => RegisterGroup_reg2_out,
+        reg3  => RegisterGroup_reg3_out,
+        reg4  => RegisterGroup_reg4_out,
+        reg5  => RegisterGroup_reg5_out,
+        reg6  => RegisterGroup_reg6_out,
+        reg7  => RegisterGroup_reg7_out,
+        T     => RegisterGroup_regT_out,
+        rgb   => CoreDisplayer_rgb
+        );
 --VGADisplayer.vhd
-     One_VGADisplayer : VGADisplayer port map (
-         reset  => '1',
-         clk25  => open,
-         rgb    => CoreDisplayer_rgb,
-         clk_50 => clk_50,
-         hs     => hs,
-         vs     => vs,
-         r      => VGA_R,
-         g      => VGA_G,
-         b      => VGA_B,
-         x_pos  => VGADisplayer_x_pos,
-         y_pos  => VGADisplayer_y_pos
-         );
+    One_VGADisplayer : VGADisplayer port map (
+        reset  => '1',
+        clk25  => open,
+        rgb    => CoreDisplayer_rgb,
+        clk_50 => clk_50,
+        hs     => hs,
+        vs     => vs,
+        r      => VGA_R,
+        g      => VGA_G,
+        b      => VGA_B,
+        x_pos  => VGADisplayer_x_pos,
+        y_pos  => VGADisplayer_y_pos
+        );
 --DM.vhd
 --     One_DM : DM port map (
 --         clk            => clk,
@@ -651,229 +651,229 @@ begin
 --         );
 
 --PC.vhd
-     One_PC : PC port map (
-         PC_IN      => MUX_PC_Ret,
-         pchold     => Hazard_Detector_pchold,
-         CLK        => filtered_clk,
-         PC_OUT     => PC_PC_OUT,
-         NEW_PC_OUT => PC_NEW_PC_OUT
-         );
+    One_PC : PC port map (
+        PC_IN      => MUX_PC_Ret,
+        pchold     => Hazard_Detector_pchold,
+        CLK        => filtered_clk,
+        PC_OUT     => PC_PC_OUT,
+        NEW_PC_OUT => PC_NEW_PC_OUT
+        );
 --RA.vhd
-     One_RA : RA port map (
-         clk        => filtered_clk,
-         RAWrite    => Controller_IDRegs.RAWrite,
-         write_data => ID_Registers_out_PC1,
-         RA         => RA_RA
-         );
+    One_RA : RA port map (
+        clk        => filtered_clk,
+        RAWrite    => Controller_IDRegs.RAWrite,
+        write_data => ID_Registers_out_PC1,
+        RA         => RA_RA
+        );
 --Hazard_detector.vhd
-     One_Hazard_Detector : Hazard_Detector port map (
-         wbenable   => EX_M_WB_Registers_out_WBRegs.WBEnable,
-         memop      => EX_M_WB_Registers_out_MRegs.MemOp,
-         memop2      => M_WB_Registers_out_MRegs.MemOp,
-         idrx       => ID_Registers_out_Rx,
-         idry       => ID_Registers_out_Ry,
-         wbregister => MUX_C_Ret,
-         MemAddr    => M_WB_Registers_out_data.ALURes,
-         exmwbclear => Hazard_Detector_exmwbclear,
-         idhold     => Hazard_Detector_idhold,
-         pchold     => Hazard_Detector_pchold
-         );
+    One_Hazard_Detector : Hazard_Detector port map (
+        wbenable   => EX_M_WB_Registers_out_WBRegs.WBEnable,
+        memop      => EX_M_WB_Registers_out_MRegs.MemOp,
+        memop2     => M_WB_Registers_out_MRegs.MemOp,
+        idrx       => ID_Registers_out_Rx,
+        idry       => ID_Registers_out_Ry,
+        wbregister => MUX_C_Ret,
+        MemAddr    => M_WB_Registers_out_data.ALURes,
+        exmwbclear => Hazard_Detector_exmwbclear,
+        idhold     => Hazard_Detector_idhold,
+        pchold     => Hazard_Detector_pchold
+        );
 
 --Controller.vhd
-     One_Controller : Controller port map (
-			reset => reset,
-         INS    => ID_Registers_out_INS,
-         IFRegs => Controller_IFRegs,
-         IDRegs => Controller_IDRegs,
-         EXRegs => Controller_EXRegs,
-         MRegs  => Controller_MRegs,
-         WBRegs => Controller_WBRegs,
+    One_Controller : Controller port map (
+        reset     => reset,
+        INS       => ID_Registers_out_INS,
+        IFRegs    => Controller_IFRegs,
+        IDRegs    => Controller_IDRegs,
+        EXRegs    => Controller_EXRegs,
+        MRegs     => Controller_MRegs,
+        WBRegs    => Controller_WBRegs,
         use_click => use_click
-         );
+        );
 --EX_M_WB_Registers.vhd
-     One_EX_M_WB_Registers : EX_M_WB_Registers port map (
-         clk        => filtered_clk,
-         force_nop  => Hazard_Detector_exmwbclear,
-         in_EXRegs  => Controller_EXRegs,
-         in_MRegs   => Controller_MRegs,
-         in_WBRegs  => Controller_WBRegs,
-         in_data    => EX_M_WB_Registers_in_data,
-         out_EXRegs => EX_M_WB_Registers_out_EXRegs,
-         out_MRegs  => EX_M_WB_Registers_out_MRegs,
-         out_WBRegs => EX_M_WB_Registers_out_WBRegs,
-         out_data   => EX_M_WB_Registers_out_data
-         );
+    One_EX_M_WB_Registers : EX_M_WB_Registers port map (
+        clk        => filtered_clk,
+        force_nop  => Hazard_Detector_exmwbclear,
+        in_EXRegs  => Controller_EXRegs,
+        in_MRegs   => Controller_MRegs,
+        in_WBRegs  => Controller_WBRegs,
+        in_data    => EX_M_WB_Registers_in_data,
+        out_EXRegs => EX_M_WB_Registers_out_EXRegs,
+        out_MRegs  => EX_M_WB_Registers_out_MRegs,
+        out_WBRegs => EX_M_WB_Registers_out_WBRegs,
+        out_data   => EX_M_WB_Registers_out_data
+        );
 --ID_Registers.vhd
-     One_ID_Registers : ID_Registers port map (
-         clk       => filtered_clk,
-         in_PC1    => PC_NEW_PC_OUT,
-         in_INS    => RAM2_Data,
-         in_hazard => Hazard_Detector_idhold,
-         out_PC1   => ID_Registers_out_PC1,
-         out_INS   => ID_Registers_out_INS
-         );
+    One_ID_Registers : ID_Registers port map (
+        clk       => filtered_clk,
+        in_PC1    => PC_NEW_PC_OUT,
+        in_INS    => RAM2_Data,
+        in_hazard => Hazard_Detector_idhold,
+        out_PC1   => ID_Registers_out_PC1,
+        out_INS   => ID_Registers_out_INS
+        );
 --MUX_A.vhd
-     One_MUX_A : MUX_A port map (
-         Rx             => EX_M_WB_Registers_out_data.Rx,
-         Ry             => EX_M_WB_Registers_out_data.Ry,
-         SP             => EX_M_WB_Registers_out_data.SP,
-         Imm            => EX_M_WB_Registers_out_data.Imm,
-         IH             => EX_M_WB_Registers_out_data.IH,
-         PC1            => EX_M_WB_Registers_out_data.PC1,
-         Data_From_WB   => MUX_D_Ret,
-         Data_From_M_WB => M_WB_Registers_out_data.ALURes,
-         Op1Src         => EX_M_WB_Registers_out_EXRegs.Op1Src,
-         ForwardA       => Forward_Unit_forwarda,
-         Ret            => MUX_A_Ret
-         );
+    One_MUX_A : MUX_A port map (
+        Rx             => EX_M_WB_Registers_out_data.Rx,
+        Ry             => EX_M_WB_Registers_out_data.Ry,
+        SP             => EX_M_WB_Registers_out_data.SP,
+        Imm            => EX_M_WB_Registers_out_data.Imm,
+        IH             => EX_M_WB_Registers_out_data.IH,
+        PC1            => EX_M_WB_Registers_out_data.PC1,
+        Data_From_WB   => MUX_D_Ret,
+        Data_From_M_WB => M_WB_Registers_out_data.ALURes,
+        Op1Src         => EX_M_WB_Registers_out_EXRegs.Op1Src,
+        ForwardA       => Forward_Unit_forwarda,
+        Ret            => MUX_A_Ret
+        );
 --MUX_B.vhd
-     One_MUX_B : MUX_B port map (
-         Imm            => EX_M_WB_Registers_out_data.Imm,
-         Ry             => EX_M_WB_Registers_out_data.Ry,
-         Data_From_WB   => MUX_D_Ret,
-         Data_From_M_WB => M_WB_Registers_out_data.ALURes,
-         Op2Src         => EX_M_WB_Registers_out_EXRegs.Op2Src,
-         ForwardB       => Forward_Unit_forwardb,
-         Ret            => MUX_B_Ret
-         );
+    One_MUX_B : MUX_B port map (
+        Imm            => EX_M_WB_Registers_out_data.Imm,
+        Ry             => EX_M_WB_Registers_out_data.Ry,
+        Data_From_WB   => MUX_D_Ret,
+        Data_From_M_WB => M_WB_Registers_out_data.ALURes,
+        Op2Src         => EX_M_WB_Registers_out_EXRegs.Op2Src,
+        ForwardB       => Forward_Unit_forwardb,
+        Ret            => MUX_B_Ret
+        );
 --MUX_C.vhd
-     One_MUX_C : MUX_C port map (
-         Rx    => EX_M_WB_Registers_out_data.Rx_WB,
-         Ry    => EX_M_WB_Registers_out_data.Ry_WB,
-         Rz    => EX_M_WB_Registers_out_data.Rz_WB,
-         WBDst => EX_M_WB_Registers_out_EXRegs.WBDst,
-         Ret   => MUX_C_Ret
-         );
+    One_MUX_C : MUX_C port map (
+        Rx    => EX_M_WB_Registers_out_data.Rx_WB,
+        Ry    => EX_M_WB_Registers_out_data.Ry_WB,
+        Rz    => EX_M_WB_Registers_out_data.Rz_WB,
+        WBDst => EX_M_WB_Registers_out_EXRegs.WBDst,
+        Ret   => MUX_C_Ret
+        );
 --MUX_D.vhd
-     One_MUX_D : MUX_D port map (
-         ALURes => WB_Registers_out_data.ALURes,
-         Mem    => WB_Registers_out_data.MemData,
-         WBSrc  => WB_Registers_out_WBRegs.WBSrc,
-         Ret    => MUX_D_Ret
-         );
+    One_MUX_D : MUX_D port map (
+        ALURes => WB_Registers_out_data.ALURes,
+        Mem    => WB_Registers_out_data.MemData,
+        WBSrc  => WB_Registers_out_WBRegs.WBSrc,
+        Ret    => MUX_D_Ret
+        );
 --MUX_E.vhd
-     One_MUX_E : MUX_E port map (
-         Rx             => EX_M_WB_Registers_out_data.Rx,
-         Ry             => EX_M_WB_Registers_out_data.Ry,
-         Data_From_WB   => MUX_D_Ret,
-         Data_From_M_WB => M_WB_Registers_out_data.ALURes,
-         MemData        => EX_M_WB_Registers_out_EXRegs.MemData,
-         Ret            => MUX_E_Ret,
-         ForwardE       => Forward_Unit_forwarde
-         );
+    One_MUX_E : MUX_E port map (
+        Rx             => EX_M_WB_Registers_out_data.Rx,
+        Ry             => EX_M_WB_Registers_out_data.Ry,
+        Data_From_WB   => MUX_D_Ret,
+        Data_From_M_WB => M_WB_Registers_out_data.ALURes,
+        MemData        => EX_M_WB_Registers_out_EXRegs.MemData,
+        Ret            => MUX_E_Ret,
+        ForwardE       => Forward_Unit_forwarde
+        );
 --Equal_Zero.vhd
-     One_Equal_Zero : Equal_Zero port map (
-         input => RegisterGroup_reg1_data,
-         ret   => Equal_Zero_ret
-         );
+    One_Equal_Zero : Equal_Zero port map (
+        input => RegisterGroup_reg1_data,
+        ret   => Equal_Zero_ret
+        );
 --adder.vhd
-     One_adder : adder port map (
-         pc  => ID_Registers_out_PC1,
-         imm => SignExtend_imm_out,
-         res => adder_res
-         );
+    One_adder : adder port map (
+        pc  => ID_Registers_out_PC1,
+        imm => SignExtend_imm_out,
+        res => adder_res
+        );
 --MUX_PC.vhd
-     One_MUX_PC : MUX_PC port map (
-         PC1      => PC_NEW_PC_OUT,
-         RA       => RA_RA,
-         Branch   => adder_res,
-         Rx       => RegisterGroup_reg1_data,
-         PCSrc    => Controller_IFRegs.PCSrc,
-         Rx_0_ren => Equal_Zero_ret,
-         T_0      => not_RegisterGroup_regT_out,
-         Ret      => MUX_PC_Ret
-         );
+    One_MUX_PC : MUX_PC port map (
+        PC1      => PC_NEW_PC_OUT,
+        RA       => RA_RA,
+        Branch   => adder_res,
+        Rx       => RegisterGroup_reg1_data,
+        PCSrc    => Controller_IFRegs.PCSrc,
+        Rx_0_ren => Equal_Zero_ret,
+        T_0      => not_RegisterGroup_regT_out,
+        Ret      => MUX_PC_Ret
+        );
 --M_WB_Registers.vhd
-     One_M_WB_Registers : M_WB_Registers port map (
-         clk        => filtered_clk,
-         in_MRegs   => EX_M_WB_Registers_out_MRegs,
-         in_WBRegs  => EX_M_WB_Registers_out_WBRegs,
-         in_data    => M_WB_Registers_in_data,
-         out_MRegs  => M_WB_Registers_out_MRegs,
-         out_WBRegs => M_WB_Registers_out_WBRegs,
-         out_data   => M_WB_Registers_out_data
-         );
+    One_M_WB_Registers : M_WB_Registers port map (
+        clk        => filtered_clk,
+        in_MRegs   => EX_M_WB_Registers_out_MRegs,
+        in_WBRegs  => EX_M_WB_Registers_out_WBRegs,
+        in_data    => M_WB_Registers_in_data,
+        out_MRegs  => M_WB_Registers_out_MRegs,
+        out_WBRegs => M_WB_Registers_out_WBRegs,
+        out_data   => M_WB_Registers_out_data
+        );
 --RegisterGroup.vhd
-     One_RegisterGroup : RegisterGroup port map (
-         clk          => clk_50,
-         read_reg1    => ID_Registers_out_Rx,
-         read_reg2    => ID_Registers_out_Ry,
-         write_enable => WB_Registers_out_WBRegs.WBEnable,
-         write_reg    => WB_Registers_out_data.WBDst,
-         write_data   => MUX_D_Ret,
-         reg1_data    => RegisterGroup_reg1_data,
-         reg2_data    => RegisterGroup_reg2_data,
-         regIH_out    => RegisterGroup_regIH_out,
-         regSP_out    => RegisterGroup_regSP_out,
-         regT_out     => RegisterGroup_regT_out,
-         reg0_out     => RegisterGroup_reg0_out,
-         reg1_out     => RegisterGroup_reg1_out,
-         reg2_out     => RegisterGroup_reg2_out,
-         reg3_out     => RegisterGroup_reg3_out,
-         reg4_out     => RegisterGroup_reg4_out,
-         reg5_out     => RegisterGroup_reg5_out,
-         reg6_out     => RegisterGroup_reg6_out,
-         reg7_out     => RegisterGroup_reg7_out
-         );
+    One_RegisterGroup : RegisterGroup port map (
+        clk          => clk_50,
+        read_reg1    => ID_Registers_out_Rx,
+        read_reg2    => ID_Registers_out_Ry,
+        write_enable => WB_Registers_out_WBRegs.WBEnable,
+        write_reg    => WB_Registers_out_data.WBDst,
+        write_data   => MUX_D_Ret,
+        reg1_data    => RegisterGroup_reg1_data,
+        reg2_data    => RegisterGroup_reg2_data,
+        regIH_out    => RegisterGroup_regIH_out,
+        regSP_out    => RegisterGroup_regSP_out,
+        regT_out     => RegisterGroup_regT_out,
+        reg0_out     => RegisterGroup_reg0_out,
+        reg1_out     => RegisterGroup_reg1_out,
+        reg2_out     => RegisterGroup_reg2_out,
+        reg3_out     => RegisterGroup_reg3_out,
+        reg4_out     => RegisterGroup_reg4_out,
+        reg5_out     => RegisterGroup_reg5_out,
+        reg6_out     => RegisterGroup_reg6_out,
+        reg7_out     => RegisterGroup_reg7_out
+        );
 --SignExtend.vhd
-     One_SignExtend : SignExtend port map (
-         imm_in  => ID_Registers_out_INS(10 downto 0),
-         ImmExt  => Controller_IDRegs.ImmExt,
-         imm_out => SignExtend_imm_out
-         );
+    One_SignExtend : SignExtend port map (
+        imm_in  => ID_Registers_out_INS(10 downto 0),
+        ImmExt  => Controller_IDRegs.ImmExt,
+        imm_out => SignExtend_imm_out
+        );
 --WB_Registers.vhd
-     One_WB_Registers : WB_Registers port map (
-         clk        => filtered_clk,
-         in_WBRegs  => M_WB_Registers_out_WBRegs,
-         in_data    => WB_Registers_in_data,
-         out_WBRegs => WB_Registers_out_WBRegs,
-         out_data   => WB_Registers_out_data
-         );
+    One_WB_Registers : WB_Registers port map (
+        clk        => filtered_clk,
+        in_WBRegs  => M_WB_Registers_out_WBRegs,
+        in_data    => WB_Registers_in_data,
+        out_WBRegs => WB_Registers_out_WBRegs,
+        out_data   => WB_Registers_out_data
+        );
 --alu.vhd
-     One_alu : alu port map (
-         Op1    => MUX_A_Ret,
-         Op2    => MUX_B_Ret,
-         ALUOp  => EX_M_WB_Registers_out_EXRegs.ALUOp,
-         ALURes => alu_ALURes
-         );
-     One_Forward_Unit : Forward_Unit port map (
-         op1src      => EX_M_WB_Registers_out_EXRegs.Op1Src,
-         op2src      => EX_M_WB_Registers_out_EXRegs.Op2Src,
-         rx          => EX_M_WB_Registers_out_data.Rx_WB,
-         ry          => EX_M_WB_Registers_out_data.Ry_WB,
-         wbregister1 => M_WB_Registers_out_data.WBDst,
-         wbsrc1      => M_WB_Registers_out_WBRegs.WBSrc,
-         wbenable1   => M_WB_Registers_out_WBRegs.WBEnable,
-         wbregister2 => WB_Registers_out_data.WBDst,
-         wbenable2   => WB_Registers_out_WBRegs.WBEnable,
-         memdata     => EX_M_WB_Registers_out_EXRegs.MemData,
-         forwarda    => Forward_Unit_forwarda,
-         forwardb    => Forward_Unit_forwardb,
-         forwarde    => Forward_Unit_forwarde
-         );
+    One_alu : alu port map (
+        Op1    => MUX_A_Ret,
+        Op2    => MUX_B_Ret,
+        ALUOp  => EX_M_WB_Registers_out_EXRegs.ALUOp,
+        ALURes => alu_ALURes
+        );
+    One_Forward_Unit : Forward_Unit port map (
+        op1src      => EX_M_WB_Registers_out_EXRegs.Op1Src,
+        op2src      => EX_M_WB_Registers_out_EXRegs.Op2Src,
+        rx          => EX_M_WB_Registers_out_data.Rx_WB,
+        ry          => EX_M_WB_Registers_out_data.Ry_WB,
+        wbregister1 => M_WB_Registers_out_data.WBDst,
+        wbsrc1      => M_WB_Registers_out_WBRegs.WBSrc,
+        wbenable1   => M_WB_Registers_out_WBRegs.WBEnable,
+        wbregister2 => WB_Registers_out_data.WBDst,
+        wbenable2   => WB_Registers_out_WBRegs.WBEnable,
+        memdata     => EX_M_WB_Registers_out_EXRegs.MemData,
+        forwarda    => Forward_Unit_forwarda,
+        forwardb    => Forward_Unit_forwardb,
+        forwarde    => Forward_Unit_forwarde
+        );
 --Ram_Handler.vhd
-One_Ram_Handler : Ram_Handler port map (
-clk => clk,
-         memop          => M_WB_Registers_out_MRegs.MemOp,
-         dm_addr        => M_WB_Registers_out_data.ALURes,
-         im_addr     => PC_PC_OUT,
-         data_in     => M_WB_Registers_out_data.MemData,
-ram1_data_out => RAM1_Data,
-ram2_data_out => RAM2_Data,
-dm_data_out => Ram_Handler_dm_data_out,
-ram2_addr => Ram_Handler_ram2_addr,
-ram1_en => Ram_Handler_ram1_en,
-ram1_we => Ram_Handler_ram1_we,
-ram1_oe => Ram_Handler_ram1_oe,
-ram2_en => Ram_Handler_ram2_en,
-ram2_we => Ram_Handler_ram2_we,
-ram2_oe => Ram_Handler_ram2_oe,
-com_data_ready => com_data_ready,
-com_rdn => com_rdn,
-com_wrn => com_wrn,
-com_tbre => com_tbre,
-com_tsre => com_tsre,
-stop_clk => stop_clk,
-status_out => status_out
-);
+    One_Ram_Handler : Ram_Handler port map (
+        clk            => clk,
+        memop          => M_WB_Registers_out_MRegs.MemOp,
+        dm_addr        => M_WB_Registers_out_data.ALURes,
+        im_addr        => PC_PC_OUT,
+        data_in        => M_WB_Registers_out_data.MemData,
+        ram1_data_out  => RAM1_Data,
+        ram2_data_out  => RAM2_Data,
+        dm_data_out    => Ram_Handler_dm_data_out,
+        ram2_addr      => Ram_Handler_ram2_addr,
+        ram1_en        => Ram_Handler_ram1_en,
+        ram1_we        => Ram_Handler_ram1_we,
+        ram1_oe        => Ram_Handler_ram1_oe,
+        ram2_en        => Ram_Handler_ram2_en,
+        ram2_we        => Ram_Handler_ram2_we,
+        ram2_oe        => Ram_Handler_ram2_oe,
+        com_data_ready => com_data_ready,
+        com_rdn        => com_rdn,
+        com_wrn        => com_wrn,
+        com_tbre       => com_tbre,
+        com_tsre       => com_tsre,
+        stop_clk       => stop_clk,
+        status_out     => status_out
+        );
 end architecture;  -- arch

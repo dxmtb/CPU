@@ -7,7 +7,7 @@ entity Hazard_Detector is
     port (
         wbenable   : in  WBEnableType;
         memop      : in  MemOpType;
-        memop2     : in MemOpType;
+        memop2     : in  MemOpType;
         idrx       : in  std_logic_vector(2 downto 0);
         idry       : in  std_logic_vector(2 downto 0);
         wbregister : in  std_logic_vector(3 downto 0);
@@ -22,9 +22,9 @@ architecture behavioral of Hazard_Detector is
 begin
     process(wbenable, memop, idrx, idry, wbregister, MemAddr, memop2)
     begin
-        if ((wbenable = WBEnable_Yes and memop = MemOp_read and (idrx = wbregister(2 downto 0) 
-                or idry = wbregister(2 downto 0))) 
-                or (memop2 /= MemOp_None and MemAddr /= com_data_addr and MemAddr /= com_status_addr)
+        if ((wbenable = WBEnable_Yes and memop = MemOp_read and (idrx = wbregister(2 downto 0)
+                                                                 or idry = wbregister(2 downto 0))) 
+            or (memop2 /= MemOp_None and MemAddr /= com_data_addr and MemAddr /= com_status_addr)
             ) then
             exmwbclear <= '1';
             idhold     <= '1';
