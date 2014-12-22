@@ -1,24 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% University/School Laboratory Report
-% LaTeX Template
-% Version 3.1 (25/3/14)
-%
-% This template has been downloaded from:
-% http://www.LaTeXTemplates.com
-%
-% Original author:
-% Linux and Unix Users Group at Virginia Tech Wiki 
-% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
-%
-% License:
-% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%----------------------------------------------------------------------------------------
-%	PACKAGES AND DOCUMENT CONFIGURATIONS
-%----------------------------------------------------------------------------------------
-
 \documentclass{article}
 
 \usepackage[version=3]{mhchem} % Package for chemical equation typesetting
@@ -31,6 +10,7 @@
 \usepackage{epstopdf}
 \usepackage{multirow}
 \usepackage{ctex}
+\usepackage{adjustbox}
 \epstopdfsetup{outdir=./Figures/}
 \graphicspath{{./Figures/}}
 \setlength\parindent{0pt} % Removes all indentation from paragraphs
@@ -63,87 +43,170 @@
 
 \tableofcontents % Print the table of contents
 
-%\begin{center}
-%\begin{tabular}{l r}
-%Date Performed: & January 1, 2012 \\ % Date the experiment was performed
-%Partners: & James Smith \\ % Partner names
-%& Mary Smith \\
-%Instructor: & Professor Smith % Instructor/supervisor
-%\end{tabular}
-%\end{center}
+\section{实验成果综述}
 
-% If you wish to include an abstract, uncomment the lines below
-% \begin{abstract}
-% Abstract text
-% \end{abstract}
+实验使用了VHDL语言在FPGA上编程实现包含25条标准指令和5条扩展指令的16位类似MIPS指令集的CPU，支持多周期以及5级流水线。
 
-\section{实验目的}
+为了解决结构冲突、数据冲突、控制冲突，使用了Forward Unit、Hazard Detection暂停流水等技术，提高流水线的效率。
+
+扩展功能包括通过串口与PC机进行通信，从而运行监控程序，并在PC端控制CPU运行的指令（配合CPU运行的kernel程序）。其余功能还包括一个VGA显示，来同步显示当前的处理器状态，包括PC、寄存器、指令等，从而方便CPU的调试。
+
+同时实验还开发了一系列Python脚本，用于自动生成entity表和管脚绑定信息，减少开发的工作量，避免粗心引起的错误，极大的提高了开发的效率。
+
+项目可以通过https://github.com/dxmtb/CPU访问，提供了所有的源代码和测试程序，以及生成代码的脚本。bits文件夹包含了最终的CPU的bit文件，包含三个版本，cpu-12.5-final.bit是12.5MHz的CPU，cpu-click-final.bit是单步版本，cpu-vga.bit是单步并在VGA显示CPU状态的版本。
+
+实验开发主要使用了XILINX ISE软件，开发版使用老师提供的THINPAD，包括FPGA、UART、RAM等部件。
+
+\section{分工介绍} % (fold)
+\label{sec:分工介绍}
+
 \begin{itemize}
-\item 加深对计算机系统知识的理解
-\item 进一步理解和掌握流水线结构计算机各部件组成及内部工作原理
-\item 掌握计算机外部输入输出的设计
-\item 培养硬件设计和调试的能力
+	\item 田博：CPU顶层结构（连线），控制器，阶段锁存器，VGA显示模块，RAM和串口模块，寄存器组；
+	\item 裘捷中：数据通路和控制信号设计，Forward Unit，Hazard Detector，RAM和串口模块，ALU；
+	\item 柯均洁：初版数据通路和控制信号，多路选择器，大部分实验报告。
 \end{itemize}
 
-\section{实验环境}
+% section 分工介绍 (end)
+
+\section{关键设计介绍} % (fold)
+\label{sec:关键设计介绍}
+
+总体上来看，CPU分五级流水，就可以分为五个部分，下面结合实验中的一些困难详细介绍一些关键技术。
+
+\subsection{访存与串口}
+开发板为我们提供了两个RAM，其中RAM1与串口共享总线。我们的指令和数据都需要用到RAM，并且这种都要支持修改和读取操作。在最初的设计中，指令独占RAM2，而数据和串口共享RAM2，并且只实现了指令的读取操作，这样就避免了结构冲突。
+
+之后发现监控程序需要修改指令内存，于是考虑到把指令和数据分开的动机已经消失，就把让串口独享RAM1的总线，从而简化串口的实现，而指令和数据都使用RAM2。这样就无法避免结构冲突，即如果需要写内存或者读取除当前指令以外的数据，都会与当前读取指令的操作冲突。我们的做法是暂停流水。具体是在Hazard Detection中检测MEM阶段有操作，并且这个操作不是针对串口，就暂停PC和锁存器。
+
+另一个难点是，传统的实现中内存操作往往要多个周期，这会拖慢CPU的速度。我们采用“双边沿”的方法有效的在一个时钟周期内完成所有访存操作。其实并没有检测两个沿，具体时序是：
+
+\begin{enumerate}
+	\item 在上升沿，锁存器给出了MEM阶段的控制信号；
+	\item 判断时钟为1时，就重置RAM信号，即置各个控制信号为1；
+	\item 在时钟的下降沿，所有控制信号均已就绪，RAM信号已重置，可以根据当前操作给出新的控制信号；
+	\item RAM的时钟较快，在控制时钟的下降沿不就，RAM的时钟上升沿，执行了MEM指令；
+	\item 在时钟的上升沿，新的RAM数据（如果是读取的话）被送入锁存器，进入新的循环。
+\end{enumerate}
+
+\subsection{VGA扩展} % (fold)
+VGA输出800x600的视频信号，通过对50MHz时钟进行分频来达到需要的工作频率。为了简化，我们仅仅使用两种颜色，黑色和白色。每一个16位的CPU状态，例如PC或者寄存器，每一个bit占一个40x40的一个方框，白色表示1，黑色表示0.
+
+VGADisplayer向CoreDisplayer模块传输当前刷新的坐标，通过判断坐标的对应位置来判断显示哪个变量，并且判断当前位的值。
+
+\subsection{代码自动生成}
+代码自动生成包括生成entity表、portmap表、signal表、控制信号生成。
+
+entity表比较简单，只要枚举每个VHDL文件，将相关关键字替换即可。
+
+对于portmap，由于我们并不知道它的输入和输出是什么，所以比较棘手。我们可以观察到，每个portmap的输出必定是到一个signal，这样我们可以通过固定的明明规范，例如entity名下划线输出信号名来生成相应的signal，并绑定到那个signal。这样，我们只需要填充每个portmap的输入即可，并且通过名字就可以很容易判断signal的来源，大大减少了错误的可能。
+
+对于控制信号，我们在代码开始对输出的variable赋值NULL语句的控制信号。每个控制信号和其取值有着规范的命名：控制信号的取值均为枚举类型，值为控制信号名下划线信号取值名。将控制信号表导出为csv，就方便了脚本进行分析和自动代码生成。
+
+\section{实验结果}
+\subsection{测试程序运行结果} 
+CPU时钟：12.5M
+执行时间（详细运行情况请见result1.MOV）
 \begin{itemize}
-\item 硬件环境：
-	\begin{itemize}
-	\item 安装有Windows7或以上操作系统的微机
-	\item THINPAD教学计算机
-	\end{itemize}
-\item 软件环境：
-	\begin{itemize}
-	\item FPGA开发工具软件XILINX ISE 12.3或以上
-	\item THINPAD教学计算机软件包，包括监控程序、终端程序、数据通信程序、汇编程序等
-	\end{itemize}
-\end{itemize}
+    \item 测试程序1运行时间：12.029s
+    \item 测试程序2运行时间：18.072s
+    \item 测试程序3运行时间；14.015s
+    \item 测试程序4运行时间：26.021s
+    \item 测试程序5运行时间：14.021s
+\end{itemize} 
+\subsection{扩展指令运行结果}
+程序的主要作用是往R0 load一个立即数，然后把R0的值放到R1，再比较R0和R1，如果两个相等，则往串口输出字母E
+运行情况（详细运行情况请见result2.MOV）。
 
-\section{实验内容}
-\begin{itemize}
-\item 指令系统设计
-	\begin{itemize}
-	\item 设计并实现5级指令流水的CPU，实现基本指令集和扩展指令集
-	\item 能够运行教学计算机监控程序
-	\item 能够运行包含5条扩展指令的用户程序
-	\end{itemize}
-\item 控制器设计
-	\begin{itemize}
-	\item 实现延时槽
-	\item 适当应用数据旁路、冲突检测等方式解决流水线“冲突”问题，提高流水线的效率
-	\end{itemize}
-\item 内存管理设计
-	\begin{itemize}
-	\item 内存地址分配应满足监控程序使用内存的要求
-	\end{itemize}
-\item 输入输出设计
-	\begin{itemize}
-	\item 完成对串口的访问
-	\end{itemize}
-\item 监控程序装入
-	\begin{itemize}
-	\item 使用数据通信程序FlashAndRam，将Kernel的二进制代码直接装入到内存RAM
-	\end{itemize}
-\item 扩展功能实现：VGA 
-\end{itemize}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.1\columnwidth]{test.png}
+\caption{扩展指令测试}
+\label{fig:test}
+\end{figure}
 
+如图\ref{fig:test}所示，寄存器值发生了变化而且输出了字母E，因此程序成功运行
 
-\section{实验设计与实现}
+\subsection{VGA扩展运行结果}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.1\columnwidth]{vga.png}
+\caption{VGA扩展}
+\label{fig:vga}
+\end{figure}
+
+我们用VGA模块在显示屏上显示寄存器信息
+如图\ref{fig:vga}所示，从上到下依次为：PC、SP、IH、0-7号寄存器、当前运行指令的指令
+通过按动按钮，我们可以观察到白块的移动，观察到寄存器值的变化，从而方便了程序的调试
+详细运行情况请见result1.MOV
+
+\section{实验总结}
+
+通过这次实验，我们对CPU的各种细节有了更加充分的了解。更多的是，我们理解了团队合作的重要性：一个人做不到的事，有了其它人的帮助就可以做到。
+
+我们由于数据同路的问题，直到DDL前一周的周五才开始编写代码，经过通宵和最后38小时的连续奋战，在检查当天的晚上8点终于完美运行所有功能，这与团队每个人的努力都分不开的。
+
+实际上，我们最后一天想要尽快完成，在混乱不堪的内存串口模块中小修小补，直到前去检查也没有修补完成。到了检查现场，反而觉得超脱了急功近利的心情，静下心来对模块进行了重写，最后奇迹般的发现这个模块完美运行。这让我们体会到关键时刻保持清醒与镇定，摆脱急躁有多么重要。
+
+这次大实验，所有的代码都是我们独立完成，尽管相对一些靠学长的组多花了许多时间，也少完成了一些扩展功能，但我们收获了人生的经验和感悟，这也是除了知识以外这个实验带给我们的最大收获。
+
+\section{详细设计与实现}
 
 \subsection{数据通路和控制信号设计图图}
 
+见Figure~\ref{fig:datapath}~和Table~\ref{tb:control}。
+
 \begin{figure}[h]
-%\centering
-\includegraphics[width=1.1\columnwidth]{datapath.pdf}
+\centering
+\includegraphics[width=1\columnwidth]{datapath.pdf}
 \caption{数据通路和控制信号设计图}
 \label{fig:datapath}
 \end{figure}
+
+\begin{table}
+\caption{控制信号列表(*表示任意)}
+\vspace{2mm}
+\begin{adjustbox}{max width=\textwidth}
+\label{tb:control}
+\begin{tabular}[h]{c|c|c|c|c|c|c|c|c|c|c|c}
+& PCSrc & ImmExt & RAWrite & Op1Src & Op2Src & WBDst & ALUOp & MemData & MemOp & WBSrc & WBEnable\\
+NOP & PC+1 & * & No & * & * & * & * & * & No & * & If WBDst!= * then Yes\\
+ADDIU &  & (Sign,7-0) &  & Rx & Imm & Rx & Plus &  &  & ALURes & \\
+ADDIU3 &  & (Sign,3-0) &  & Rx & Imm & Ry & Plus &  &  & ALURes & \\
+ADDSP &  & (Sign,7-0) &  & SP & Imm & SP & Plus &  &  & ALURes & \\
+ADDU &  &  &  & Rx & Ry & Rz & Plus &  &  & ALURes & \\
+AND &  &  &  & Rx & Ry & Rx & And &  &  & ALURes & \\
+B & Branch-True & (Sign,10-0) &  &  &  &  &  &  &  &  & \\
+BEQZ & Branch-Rx-0 & (Sign,7-0) &  &  &  &  &  &  &  &  & \\
+BNEZ & Branch-Rx-1 & (Sign,7-0) &  &  &  &  &  &  &  &  & \\
+BTEQZ & Branch-T-0 & (Sign,7-0) &  &  &  &  &  &  &  &  & \\
+CMP &  &  &  & Rx & Ry & T & Sub &  &  & ALURes & \\
+JR & Rx &  &  &  &  &  &  &  &  &  & \\
+LI &  & (Zero,7-0) &  & Imm & 0 & Rx & Or &  &  & ALURes & \\
+LW &  & (Sign,4-0) &  & Rx & Imm & Ry & Plus &  & Read & Mem & \\
+LW\_SP &  & (Sign,7-0) &  & SP & Imm & Rx & Plus &  & Read & Mem & \\
+MFIH &  &  &  & IH & 0 & Rx & Or &  &  & ALURes & \\
+MFPC &  &  &  & PC+1 & 0 & Rx & Or &  &  & ALURes & \\
+MTIH &  &  &  & Rx & 0 & IH & Or &  &  & ALURes & \\
+MTSP &  &  &  & Rx & 0 & SP & Or &  &  & ALURes & \\
+OR &  &  &  & Rx & Ry & Rx & Or &  &  & ALURes & \\
+SLL &  & (Shift,4-2) &  & Ry & Imm & Rx & SLL &  &  & ALURes & \\
+SRA &  & (Shift,4-2) &  & Ry & Imm & Rx & SRA &  &  & ALURes & \\
+SUBU &  &  &  & Rx & Ry & Rz & Sub &  &  & ALURes & \\
+SW &  & (Sign,4-0) &  & Rx & Imm &  & Plus & Ry & Write &  & \\
+SW\_SP &  & (Sign,7-0) &  & SP & Imm &  & Plus & Rx & Write &  & \\
+JRRA & RA &  &  &  &  &  &  &  &  &  & \\
+JALR & Rx &  & Yes &  &  &  &  &  &  &  & \\
+CMPI &  & (Sign,7-0) &  & Rx & Imm & T & Sub &  &  & ALURes & \\
+MOVE &  &  &  & Ry & 0 & Rx & Or &  &  & ALURes & \\
+SLT &  &  &  & Rx & Ry & T & If\_Less &  &  & ALURes & \\
+\end{tabular}
+\end{adjustbox}
+\end{table}
 
 \subsection{IF阶段}
 
 \subsubsection{MUX\_PC}
 \label{subsubsec:pc}
-\paragraph{单元描述}
 \paragraph{输入信号}
 \begin{itemize}
 \item PCSrc：控制MUX\_PC来选择下一个PC的取值，是顺序执行的PC+1或者是新的PC地址。取值情况为：
@@ -517,45 +580,7 @@ WB阶段的控制信号，由以下具体信号组成：
 	
 		
 \subsection{MEM阶段}
-\label{subsec:mem}		
-\subsubsection{RamHandler指令数据存储器}
-		
-\paragraph{单元描述}
-控制Ram中指令的读入和数据的读写，以及串口的访问
-		
-\paragraph{输入信号}
-		\begin{itemize}
-			\item clk 时钟
-			\item Memop 
-			\item dm\_addr
-			\item im\_addr 
-			\item data\_in
-			\item com\_data\_ready 
-			\item com\_tbre
-			\item com\_tsre 
-			\item ram1\_data\_out
-			\item ram2\_data\_out 
-		\end{itemize}
-		
-\paragraph{输出信号}
-		\begin{itemize}
-			\item dm\_data\_out	
-			\item ram2\_addr 
-			\item ram1\_en
-			\item ram1\_we 
-			\item ram1\_oe
-			\item ram2\_en 
-			\item ram2\_we
-			\item ram2\_oe 
-			\item com\_rdn
-			\item com\_wrn 
-			\item stop\_clk
-			\item status\_out 
-			\item ram1\_data\_out
-			\item ram2\_data\_out 
-		\end{itemize}
-		
-\paragraph{实现细节}
+见关键设计介绍。
 
 \subsection{WB阶段}
 		
@@ -576,59 +601,7 @@ WB阶段的控制信号，由以下具体信号组成：
 \end{itemize}
 \paragraph{输出信号}
 根据WBSrc信号选择对应的写回数据
-
 		
-\subsection{VGA扩展}
-		
-\section{实验结果}
-\subsection{测试程序运行结果} 
-CPU时钟：12.5M
-执行时间（详细运行情况请见result1.MOV）
-\begin{itemize}
-    \item 测试程序1运行时间：12.029s
-    \item 测试程序2运行时间：18.072s
-    \item 测试程序3运行时间；14.015s
-    \item 测试程序4运行时间：26.021s
-    \item 测试程序5运行时间：14.021s
-\end{itemize} 
-\subsection{扩展指令运行结果}
-程序的主要作用是往R0 load一个立即数，然后把R0的值放到R1，再比较R0和R1，如果两个相等，则往串口输出字母E
-运行情况（详细运行情况请见result2.MOV）。
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=1.1\columnwidth]{test.png}
-\caption{扩展指令测试}
-\label{fig:test}
-\end{figure}
-
-如图\ref{fig:test}所示，寄存器值发生了变化而且输出了字母E，因此程序成功运行
-
-\subsection{VGA扩展运行结果}
-\begin{figure}[h]
-\centering
-\includegraphics[width=1.1\columnwidth]{vga.png}
-\caption{VGA扩展}
-\label{fig:vga}
-\end{figure}
-
-我们用VGA模块在显示屏上显示寄存器信息
-如图\ref{fig:vga}所示，从上到下依次为：PC、SP、IH、0-7号寄存器、当前运行指令的指令
-通过按动按钮，我们可以观察到白块的移动，观察到寄存器值的变化，从而方便了程序的调试
-详细运行情况请见result1.MOV
-
-\section{实验总结}
-
-
-%----------------------------------------------------------------------------------------
-%	BIBLIOGRAPHY
-%----------------------------------------------------------------------------------------
-
-%\bibliographystyle{apalike}
-
-%\bibliography{sample}
-
-%----------------------------------------------------------------------------------------
 
 
 \end{document}
