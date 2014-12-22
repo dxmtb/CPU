@@ -576,16 +576,47 @@ WB阶段的控制信号，由以下具体信号组成：
 \end{itemize}
 \paragraph{输出信号}
 根据WBSrc信号选择对应的写回数据
-		
-		
 
-		
-\section{扩展实验}
 		
 \subsection{VGA扩展}
 		
 \section{实验结果}
-		
+\subsection{测试程序运行结果} 
+CPU时钟：12.5M
+执行时间（详细运行情况请见result1.MOV）
+\begin{itemize}
+    \item 测试程序1运行时间：12.029s
+    \item 测试程序2运行时间：18.072s
+    \item 测试程序3运行时间；14.015s
+    \item 测试程序4运行时间：26.021s
+    \item 测试程序5运行时间：14.021s
+\end{itemize} 
+\subsection{扩展指令运行结果}
+程序的主要作用是往R0 load一个立即数，然后把R0的值放到R1，再比较R0和R1，如果两个相等，则往串口输出字母E
+运行情况（详细运行情况请见result2.MOV）。
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.1\columnwidth]{test.png}
+\caption{扩展指令测试}
+\label{fig:test}
+\end{figure}
+
+如图\ref{fig:test}所示，寄存器值发生了变化而且输出了字母E，因此程序成功运行
+
+\subsection{VGA扩展运行结果}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.1\columnwidth]{vga.png}
+\caption{VGA扩展}
+\label{fig:vga}
+\end{figure}
+
+我们用VGA模块在显示屏上显示寄存器信息
+如图\ref{fig:vga}所示，从上到下依次为：PC、SP、IH、0-7号寄存器、当前运行指令的指令
+通过按动按钮，我们可以观察到白块的移动，观察到寄存器值的变化，从而方便了程序的调试
+详细运行情况请见result1.MOV
+
 \section{实验总结}
 
 
@@ -593,9 +624,9 @@ WB阶段的控制信号，由以下具体信号组成：
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\bibliographystyle{apalike}
+%\bibliographystyle{apalike}
 
-\bibliography{sample}
+%\bibliography{sample}
 
 %----------------------------------------------------------------------------------------
 
